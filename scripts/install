@@ -170,6 +170,8 @@ chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
+venv_path=$(ynh_app_setting_get --app=$app --key=venv_path)
+
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
