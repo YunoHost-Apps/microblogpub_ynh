@@ -153,7 +153,6 @@ git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
 (
     export PYENV_ROOT=${final_path}/pyenv
     ${final_path}/.pyenv/bin/pyenv install 3.10.6
-    export OLD_PATH=$PATH
     export PATH="${final_path}/pyenv/versions/3.10.6/bin:$PATH"
     git clone -b ynh-support https://git.sr.ht/~tsileo/microblog.pub ${final_path}/microblogpub
     pip install poetry
@@ -162,15 +161,14 @@ git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
     poetry install
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
     poetry run inv update
-    export PATH=$OLD_PATH
-    venv_path=`${final_path}/pyenv/versions/3.10.6/bin/poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
-    ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 )
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
-venv_path=$(ynh_app_setting_get --app=$app --key=venv_path)
+venv_name=`ls ${final_path}/venv`
+venv_path="${final_path}/venv/${venv_name}"
+ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 
 #=================================================
 # NGINX CONFIGURATION
