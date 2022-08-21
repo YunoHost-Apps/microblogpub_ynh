@@ -150,10 +150,8 @@ chown -R $app:www-data "$final_path"
 # Install Python3.10 using pyenv
 git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
 export PYENV_ROOT=${final_path}/pyenv
-${final_path}/.pyenv/bin/pyenv install 3.6.10
-ls -lR /opt/yunohost/
+${final_path}/.pyenv/bin/pyenv install 3.10.6
 export PATH="${final_path}/pyenv/versions/3.10.6/bin:$PATH"
-ls ${final_path}/pyenv/versions/3.10.6/bin
 git clone https://git.sr.ht/~tsileo/microblog.pub@ynh-support ${final_path}/microblogpub
 pip install poetry
 export POETRY_VIRTUALENVS_PATH=${final_path}/venv
