@@ -155,12 +155,11 @@ export PATH="${final_path}/pyenv/versions/3.10.6/bin:$PATH"
 git clone -b ynh-support https://git.sr.ht/~tsileo/microblog.pub ${final_path}/microblogpub
 pip install poetry
 export POETRY_VIRTUALENVS_PATH=${final_path}/venv
-poetry install
 (
     cd ${final_path/microblogpub}
-    ${final_path}/pyenv/versions/3.10.6/bin/poetry install
-    ${final_path}/pyenv/versions/3.10.6/bin/poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
-    ${final_path}/pyenv/versions/3.10.6/bin/poetry run inv update
+    poetry install
+    poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
+    poetry run inv update
     $venv_path=`poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
     ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 )
