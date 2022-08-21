@@ -29,6 +29,11 @@
     "arguments": {
         "install": [
             {
+                "name": "is_public",
+                "type": "boolean",
+                "default": true
+            },
+            {
                 "name": "domain",
                 "type": "domain"
             },

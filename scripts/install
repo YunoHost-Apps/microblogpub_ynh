@@ -24,6 +24,7 @@ ynh_abort_if_errors
 # RETRIEVE ARGUMENTS FROM THE MANIFEST
 #=================================================
 
+is_public=$YNH_APP_ARG_IS_PUBLIC
 domain=$YNH_APP_ARG_DOMAIN
 username=$YNH_APP_ARG_USERNAME
 name=$YNH_APP_ARG_NAME
