@@ -160,7 +160,7 @@ export POETRY_VIRTUALENVS_PATH=${final_path}/venv
     poetry install
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
     poetry run inv update
-    $venv_path=`poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
+    venv_path=`poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
     ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 )
 
