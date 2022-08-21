@@ -152,7 +152,7 @@ git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
 export PYENV_ROOT=${final_path}/pyenv
 ${final_path}/.pyenv/bin/pyenv install 3.10.6
 export PATH="${final_path}/pyenv/versions/3.10.6/bin:$PATH"
-git clone https://git.sr.ht/~tsileo/microblog.pub@ynh-support ${final_path}/microblogpub
+git clone -b ynh-support https://git.sr.ht/~tsileo/microblog.pub ${final_path}/microblogpub
 pip install poetry
 export POETRY_VIRTUALENVS_PATH=${final_path}/venv
 poetry install
