@@ -156,7 +156,7 @@ git clone -b ynh-support https://git.sr.ht/~tsileo/microblog.pub ${final_path}/m
 pip install poetry
 export POETRY_VIRTUALENVS_PATH=${final_path}/venv
 (
-    cd ${final_path/microblogpub}
+    cd ${final_path}/microblogpub
     poetry install
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
     poetry run inv update
