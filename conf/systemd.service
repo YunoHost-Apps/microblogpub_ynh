@@ -8,7 +8,7 @@ User=__APP__
 Group=__APP__
 WorkingDirectory=__FINALPATH__/microblogpub
 Environment="UVICORN_PORT=__PORT__"
-Environment="VENV_DIR=__VENVPATH__"
+Environment="VENV_DIR=__VENV_PATH__"
 Environment="POETRY_VIRTUALENVS_PATH=__FINALPATH__/venv"
 ExecStart=__FINALPATH__/pyenv/versions/3.10.6/bin/poetry run supervisord -c misc/ynh-supervisord.conf -n
 StandardOutput=append:/var/log/__APP__/__APP__.log

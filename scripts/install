@@ -162,9 +162,10 @@ git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
     poetry install
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
     poetry run inv update
+    export PATH=$OLD_PATH
+    venv_path=`${final_path}/pyenv/versions/3.10.6/bin/poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
+    ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 )
-venv_path=`${final_path}/pyenv/versions/3.10.6/bin/poetry env info | grep Python | awk "END{print}" | awk 'gsub("Python:\t", ""); {print $2}'`
-ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
