@@ -104,6 +104,8 @@ ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 mkdir -p $final_path
 # ynh_setup_source --dest_dir="$final_path"
+ynh_setup_source --dest-dir="$final_path/.pyenv" pyenv.src
+python_version=3.10.6
 
 #=================================================
 # SPECIFIC SETUP
@@ -113,12 +115,12 @@ mkdir -p $final_path
 ynh_script_progression --message="Installing microblogpub..." --time --weight=5
 
 # Install Python3.10 using pyenv
-git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
+# git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
 (
     # Install Python3.10
     export PYENV_ROOT=${final_path}/pyenv
-    ${final_path}/.pyenv/bin/pyenv install 3.10.6
-    export PATH="${final_path}/pyenv/versions/3.10.6/bin:$PATH"
+    ${final_path}/.pyenv/bin/pyenv install $python_version
+    export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
 
     # Clone the repo
     git clone https://git.sr.ht/~tsileo/microblog.pub ${final_path}/microblogpub
@@ -271,6 +273,7 @@ ynh_script_progression --message="Starting a systemd service..." --time --weight
 ###		- And the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the change_url script
 
 # Start a systemd service
+chown -R $app:www-data "/var/log/$app"
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
 #=================================================
