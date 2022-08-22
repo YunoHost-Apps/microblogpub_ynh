@@ -14,7 +14,7 @@ python_version=3.10.6
 
 microblogpub_install_python () {
     # TODO: delete old Python version
-    local final_path = $1
+    local final_path="$1"
     if [ ! -d "${final_path}/pyenv/versions/${python_version}" ]; then
         ynh_print_info --message="Installing Python ${python_version}"
         export PYENV_ROOT=${final_path}/pyenv
@@ -25,7 +25,7 @@ microblogpub_install_python () {
 }
 
 microblogpub_install_deps () {
-    local final_path = $1
+    local final_path="$1"
     export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
     pip install poetry
     export POETRY_VIRTUALENVS_PATH=${final_path}/venv
