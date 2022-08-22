@@ -65,6 +65,7 @@ ynh_script_progression --message="Storing installation settings..." --time --wei
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=/
 ynh_app_setting_set --app=$app --key=username --value=$username
+ynh_app_setting_set --app=$app --key=python_version --value=$python_version
 
 #=================================================
 # STANDARD MODIFICATIONS
@@ -106,7 +107,6 @@ mkdir -p $final_path
 # ynh_setup_source --dest_dir="$final_path"
 ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
 ynh_setup_source --dest_dir="$final_path/microblogpub" --source_id=app
-python_version=3.10.6
 
 #=================================================
 # SPECIFIC SETUP
@@ -115,19 +115,10 @@ python_version=3.10.6
 #=================================================
 ynh_script_progression --message="Installing microblogpub..." --time --weight=5
 
-# Install Python3.10 using pyenv
-# git clone https://github.com/pyenv/pyenv.git ${final_path}/.pyenv
 (
-    # Install Python3.10
-    export PYENV_ROOT=${final_path}/pyenv
-    ${final_path}/.pyenv/bin/pyenv install $python_version
-    export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
+    microblogpub_install_python $final_path
 
-    # Install poetry and deps
-    pip install poetry
-    export POETRY_VIRTUALENVS_PATH=${final_path}/venv
-    cd ${final_path}/microblogpub
-    poetry install
+    microblogpub_install_deps $final_path
 
     # Setup initial configuration
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
@@ -280,7 +271,7 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 ynh_script_progression --message="Configuring Fail2Ban..." --time --weight=1
 
 # Create a dedicated Fail2Ban config
-# ynh_add_fail2ban_config --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
+ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:     <HOST>:.+ - \"POST /admin/login HTTP/.*\" 403 Forbidden"
 
 #=================================================
 # SETUP SSOWAT
