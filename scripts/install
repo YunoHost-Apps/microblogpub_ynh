@@ -267,6 +267,7 @@ ynh_script_progression --message="Starting a systemd service..." --time --weight
 ###		- And the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the change_url script
 
 # Start a systemd service
+touch /var/log/$app/uvicorn.log
 chown -R $app:www-data "/var/log/$app"
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
