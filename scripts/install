@@ -104,7 +104,7 @@ ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 mkdir -p $final_path
 # ynh_setup_source --dest_dir="$final_path"
-ynh_setup_source --dest-dir="$final_path/.pyenv" pyenv.src
+ynh_setup_source --dest_dir="$final_path/.pyenv" pyenv.src
 python_version=3.10.6
 
 #=================================================
