@@ -64,7 +64,7 @@ ynh_script_progression --message="Storing installation settings..." --time --wei
 
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=/
-ynh_app_setting_set --app=$username --key=username --value=/
+ynh_app_setting_set --app=$app --key=username --value=$username
 
 #=================================================
 # STANDARD MODIFICATIONS
