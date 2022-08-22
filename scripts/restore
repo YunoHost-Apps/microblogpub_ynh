@@ -68,6 +68,12 @@ chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
+# Re-create the logs dir
+mkdir /var/log/$app
+# Make fail2ban happy
+touch /var/log/$app/uvicorn.log
+chown -R $app:www-data "/var/log/$app"
+
 #=================================================
 # RESTORE FAIL2BAN CONFIGURATION
 #=================================================
