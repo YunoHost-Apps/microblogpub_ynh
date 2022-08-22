@@ -1,0 +1,5 @@
+[purge_old_data]
+name = "purge old data"
+description = "Purge old data from the inbox to reclaim disk space."
+
+command = "echo $app"
