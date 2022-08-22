@@ -33,6 +33,16 @@ microblogpub_install_deps () {
     poetry install
 }
 
+microblogpub_update () {
+    local final_path="$1"
+    (
+        export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
+        cd ${final_path}/microblogpub
+        export POETRY_VIRTUALENVS_PATH=${final_path}/venv
+        poetry run inv update
+    )
+}
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================
