@@ -13,7 +13,7 @@ pkg_dependencies="python3 python3-dev libxml2-dev libxslt-dev gcc libjpeg-dev zl
 python_version=3.10.6
 
 microblogpub_install_python () {
-    local final_path="opt/yunohost/${YNH_APP_INSTANCE_NAME}"
+    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     # Install/update pyenv
     ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
     export PYENV_ROOT=${final_path}/pyenv
@@ -37,19 +37,19 @@ microblogpub_install_python () {
 
 microblogpub_install_deps () {
     ynh_print_info --message="Installing deps with poetry"
-    local final_path="opt/yunohost/${YNH_APP_INSTANCE_NAME}"
+    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     (
         export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
         pip install poetry
         export POETRY_VIRTUALENVS_PATH=${final_path}/venv
-        cd ${final_path}/microblogpub
+        cd $final_path/microblogpub
         poetry install
     )
 }
 
 microblogpub_update () {
     ynh_print_info --message="Updating microblogpub"
-    local final_path="opt/yunohost/${YNH_APP_INSTANCE_NAME}"
+    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     (
         export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
         cd ${final_path}/microblogpub
