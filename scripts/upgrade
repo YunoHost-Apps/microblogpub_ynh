@@ -20,6 +20,7 @@ port=$(ynh_app_setting_get --app=$app --key=port)
 domain=$(ynh_app_setting_get --app=$app --key=domain)
 path_url=$(ynh_app_setting_get --app=$app --key=path)
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+venv_path=$(ynh_app_setting_get --app=$app --key=venv_path)
 
 #=================================================
 # CHECK VERSION
