@@ -1,5 +1,5 @@
-SOURCE_URL=https://git.sr.ht/~tsileo/microblog.pub/archive/adcaf95ab283f870f311434a38ff306dc61011d8.tar.gz
-SOURCE_SUM=e92b12096cb2f84a7d5d0804aa5706656f55ffe6dab3693f7e9424ad2183da79
+SOURCE_URL=https://git.sr.ht/~tsileo/microblog.pub/archive/0811609e3e8007ddfe89e76dda17bfe05a89ac07.tar.gz
+SOURCE_SUM=f544a2ea818333559995d4372cbc0c5d8186f303f7a4012d6bd4d7b1fa59925f
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
