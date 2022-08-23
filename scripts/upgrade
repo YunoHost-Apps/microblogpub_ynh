@@ -99,14 +99,13 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_print_info --message="upgrade type: ${upgrade_type}"
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_script_progression --message="Upgrading source files..." --time --weight=1
 
 	# Download, check integrity, uncompress and patch the source from app.src
-	ynh_setup_source --dest_dir="$final_path" --source_id=app --keep="data/"
+	ynh_setup_source --dest_dir="$final_path/microblogpub" --source_id=app --keep="data/"
     (
         microblogpub_install_python
         microblogpub_install_deps
