@@ -10,7 +10,7 @@ pkg_dependencies="python3 python3-dev libxml2-dev libxslt-dev gcc libjpeg-dev zl
 #=================================================
 # PERSONAL HELPERS
 #=================================================
-python_version=3.10.5
+python_version=3.10.6
 
 microblogpub_install_python () {
     local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
