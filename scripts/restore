@@ -54,9 +54,11 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 #=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
-ynh_script_progression --message="Restoring the app main directory..." --time --weight=1
+ynh_script_progression --message="Restoring the app main directory..." --time --weight=10
 
-ynh_restore_file --origin_path="$final_path"
+microblogpub_install_python
+ynh_restore_file --origin_path="$final_path/microblogpub"
+microblogpub_install_deps
 
 # FIXME: this should be managed by the core in the future
 # Here, as a packager, you may have to tweak the ownerhsip/permissions

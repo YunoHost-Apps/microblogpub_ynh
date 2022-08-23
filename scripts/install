@@ -105,7 +105,6 @@ ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
 mkdir -p $final_path
 # ynh_setup_source --dest_dir="$final_path"
-ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
 ynh_setup_source --dest_dir="$final_path/microblogpub" --source_id=app
 
 #=================================================
@@ -114,17 +113,10 @@ ynh_setup_source --dest_dir="$final_path/microblogpub" --source_id=app
 # ...
 #=================================================
 ynh_script_progression --message="Installing Python ${python_version}..." --time --weight=5
-
-(
-    microblogpub_install_python $final_path
-)
+microblogpub_install_python
 
 ynh_script_progression --message="Installing Python deps..." --time --weight=5
-
-(
-    microblogpub_install_deps $final_path
-)
-
+microblogpub_install_deps
 
 ynh_script_progression --message="Setting up microblogpub config..." --time --weight=1
 
@@ -137,7 +129,7 @@ ynh_script_progression --message="Setting up microblogpub config..." --time --we
 
 )
 
-microblogpub_update $final_path
+microblogpub_update
 
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
