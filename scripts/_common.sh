@@ -32,6 +32,8 @@ microblogpub_install_python () {
     if [ ! -d "${final_path}/pyenv/versions/${python_version}" ]; then
         ynh_print_info --message="Installing Python ${python_version}"
         $final_path/.pyenv/bin/pyenv install $python_version
+    else
+        ynh_print_info --message="Python ${python_version} is already installed"
     fi 
 }
 
