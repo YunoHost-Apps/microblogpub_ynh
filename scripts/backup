@@ -47,6 +47,7 @@ ynh_print_info --message="Declaring files to be backed up..."
 
 # Note that we don't backup Python/the venv as it can be easily rebuilt
 ynh_backup --src_path="$final_path/microblogpub"
+ynh_backup --src_path="$final_path/inv.sh"
 
 #=================================================
 # BACKUP THE NGINX CONFIGURATION
