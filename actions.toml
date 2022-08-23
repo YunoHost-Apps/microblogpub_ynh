@@ -1,6 +1,6 @@
-[purge_old_data]
-name = "purge old data"
-description = "Purge old data from the inbox to reclaim disk space."
+[prune_old_data]
+name = "prune old data"
+description = "Prune old data from the inbox to reclaim disk space."
 
 cwd = "/opt/yunohost/$app"
-command = "./inv.sh purge-old-data"
+command = "./inv.sh prune-old-data"

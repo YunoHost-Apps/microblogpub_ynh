@@ -141,6 +141,7 @@ venv_path="${final_path}/venv/${venv_name}"
 ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 
 ynh_add_config --template="inv.sh" --destination="$final_path/inv.sh"
+chmod u+x $final_path/inv.sh
 
 #=================================================
 # NGINX CONFIGURATION
