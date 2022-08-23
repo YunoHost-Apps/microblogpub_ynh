@@ -19,7 +19,7 @@ microblogpub_install_python () {
     export PYENV_ROOT=${final_path}/pyenv
 
     old_python_version=$(ynh_app_setting_get --app=$YNH_APP_INSTANCE_NAME --key=python_version)
-    if [ -z "${old_python_version}" ]; then
+    if [ ! -z "${old_python_version}" ]; then
         if [ "${old_python_version}" != "${python_version}" ]; then
             old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
             if [ -d "${old_python_version_path}" ]; then
