@@ -101,13 +101,12 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 ynh_print_info --message="upgrade_type=${upgrade_type}"
 
-if [ "$upgrade_type" == "UPGRADE_PACKAGE"]; then
+if [ "$upgrade_type" == "UPGRADE_PACKAGE" ]; then
     microblogpub_install_python
     microblogpub_install_deps
 fi
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
+if [ "$upgrade_type" == "UPGRADE_APP" ]; then
     microblogpub_install_python
 
 	ynh_script_progression --message="Upgrading source files..." --time --weight=1
