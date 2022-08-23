@@ -18,13 +18,15 @@ microblogpub_install_python () {
     ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
     export PYENV_ROOT=${final_path}/pyenv
 
-    old_python_version=`ls $final_path/pyenv/versions`
-    if [ ! -z "${old_python_version}" ]; then
-        if [ "${old_python_version}" != "${python_version}" ]; then
-            old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
-            if [ -d "${old_python_version_path}" ]; then
-                ynh_print_info --message="Deleting Python ${old_python_version}"
-                ynh_secure_remove --file="${old_python_version_path}"
+    if [ -d "$final_path/pyenv/versions" ]; then
+        old_python_version=`ls $final_path/pyenv/versions`
+        if [ ! -z "${old_python_version}" ]; then
+            if [ "${old_python_version}" != "${python_version}" ]; then
+                old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
+                if [ -d "${old_python_version_path}" ]; then
+                    ynh_print_info --message="Deleting Python ${old_python_version}"
+                    ynh_secure_remove --file="${old_python_version_path}"
+                fi
             fi
         fi
     fi
