@@ -10,7 +10,7 @@ pkg_dependencies="python3 python3-dev libxml2-dev libxslt-dev gcc libjpeg-dev zl
 #=================================================
 # PERSONAL HELPERS
 #=================================================
-python_version=3.10.6
+python_version=3.10.5
 
 microblogpub_install_python () {
     local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
@@ -18,7 +18,7 @@ microblogpub_install_python () {
     ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
     export PYENV_ROOT=${final_path}/pyenv
 
-    old_python_version=$(ynh_app_setting_get --app=$YNH_APP_INSTANCE_NAME --key=python_version)
+    old_python_version=`ls $final_path/pyenv/versions`
     if [ ! -z "${old_python_version}" ]; then
         if [ "${old_python_version}" != "${python_version}" ]; then
             old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
