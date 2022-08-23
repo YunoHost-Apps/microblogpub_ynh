@@ -101,11 +101,12 @@ ynh_install_app_dependencies $pkg_dependencies
 #=================================================
 ynh_print_info --message="upgrade_type=${upgrade_type}"
 
+ynh_add_config --template="inv.sh" --destination="$final_path/inv.sh"
+chmod u+x $final_path/inv.sh
+
 if [ "$upgrade_type" == "UPGRADE_PACKAGE" ]; then
     microblogpub_install_python
     microblogpub_install_deps
-    ynh_add_config --template="inv.sh" --destination="$final_path/inv.sh"
-    chmod u+x $final_path/inv.sh
 fi
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]; then
