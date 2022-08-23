@@ -24,7 +24,7 @@ microblogpub_install_python () {
             old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
             if [ -d "${old_python_version_path}" ]; then
                 ynh_print_info --message="Deleting Python ${old_python_version}"
-                rm -rf $old_python_version_path
+                ynh_secure_remove --file="${old_python_version_path}"
             fi
         fi
     fi
