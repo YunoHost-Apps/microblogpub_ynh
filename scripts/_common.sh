@@ -66,7 +66,7 @@ microblogpub_update () {
 microblogpub_set_version() {
     local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     version_file="${final_path}/microblogpub/app/_version.py"
-    app_package_version=ynh_app_package_version
+    app_package_version=$(ynh_app_package_version)
     echo "VERSION_COMMIT = \"ynh${app_package_version}\"" > $version_file
 }
 
