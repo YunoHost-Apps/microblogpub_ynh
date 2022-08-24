@@ -63,6 +63,15 @@ microblogpub_update () {
     )
 }
 
+microblogpub_set_version() {
+    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
+    version_file="${final_path}/microblogpub/app/_version.py"
+    touch $version_file
+    local version=ynh_app_upstream_version
+    local package_version=ynh_app_package_version
+    ynh_write_var_in_file --file=$version_file --key="VERSION" --value="${version}+ynh${package_version}"
+}
+
 #=================================================
 # EXPERIMENTAL HELPERS
 #=================================================

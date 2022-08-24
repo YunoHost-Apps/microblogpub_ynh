@@ -120,6 +120,7 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]; then
     microblogpub_update
 fi
 
+microblogpub_set_version
 
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"

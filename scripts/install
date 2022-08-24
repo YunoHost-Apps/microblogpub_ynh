@@ -130,6 +130,7 @@ ynh_script_progression --message="Setting up microblogpub config..." --time --we
 )
 
 microblogpub_update
+microblogpub_set_version
 
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
