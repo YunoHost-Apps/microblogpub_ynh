@@ -24,7 +24,7 @@ ynh_abort_if_errors
 #=================================================
 # LOAD SETTINGS
 #=================================================
-ynh_script_progression --message="Loading installation settings..." --time --weight=1
+ynh_script_progression --message="Loading installation settings..." --weight=1
 
 app=$YNH_APP_INSTANCE_NAME
 
@@ -36,7 +36,7 @@ datadir=$(ynh_app_setting_get --app=$app --key=datadir)
 #=================================================
 # CHECK IF THE APP CAN BE RESTORED
 #=================================================
-ynh_script_progression --message="Validating restoration parameters..." --time --weight=1
+ynh_script_progression --message="Validating restoration parameters..." --weight=1
 
 test ! -d $final_path \
 	|| ynh_die --message="There is already a directory: $final_path "
@@ -44,7 +44,7 @@ test ! -d $final_path \
 #=================================================
 # RECREATE THE DEDICATED USER
 #=================================================
-ynh_script_progression --message="Recreating the dedicated system user..." --time --weight=1
+ynh_script_progression --message="Recreating the dedicated system user..." --weight=1
 
 # Create the dedicated user (if not existing)
 ynh_system_user_create --username=$app --home_dir="$final_path"
@@ -52,34 +52,26 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 #=================================================
 # REINSTALL DEPENDENCIES
 #=================================================
-ynh_script_progression --message="Reinstalling dependencies..." --time --weight=1
+ynh_script_progression --message="Reinstalling dependencies..." --weight=1
 
 # Define and install dependencies
 ynh_install_app_dependencies $pkg_dependencies
 
 
 #=================================================
-# RESTORE THE APP MAIN DIR
+# RESTORE THE APP
 #=================================================
-ynh_script_progression --message="Restoring the app main directory..." --time --weight=10
+ynh_script_progression --message="Restoring the app main directory..." --weight=50
 
 microblogpub_install_python
 ynh_restore_file --origin_path="$final_path/microblogpub"
 microblogpub_install_deps
 
 ynh_restore_file --origin_path="$final_path/inv.sh"
-chmod u+x $final_path/inv.sh
-
-
-# FIXME: this should be managed by the core in the future
-# Here, as a packager, you may have to tweak the ownerhsip/permissions
-# such that the appropriate users (e.g. maybe www-data) can access
-# files in some cases.
-# But FOR THE LOVE OF GOD, do not allow r/x for "others" on the entire folder -
-# this will be treated as a security issue.
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
+chmod u+x $final_path/inv.sh
 
 # Re-create the logs dir
 mkdir /var/log/$app
@@ -90,7 +82,7 @@ chown -R $app:www-data "/var/log/$app"
 #=================================================
 # RESTORE FAIL2BAN CONFIGURATION
 #=================================================
-ynh_script_progression --message="Restoring the Fail2Ban configuration..." --time --weight=1
+ynh_script_progression --message="Restoring the Fail2Ban configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/fail2ban/jail.d/$app.conf"
 ynh_restore_file --origin_path="/etc/fail2ban/filter.d/$app.conf"
@@ -99,14 +91,14 @@ ynh_systemd_action --action=restart --service_name=fail2ban
 #=================================================
 # RESTORE THE NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Restoring the NGINX web server configuration..." --time --weight=1
+ynh_script_progression --message="Restoring the NGINX web server configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # RESTORE SYSTEMD
 #=================================================
-ynh_script_progression --message="Restoring the systemd configuration..." --time --weight=1
+ynh_script_progression --message="Restoring the systemd configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/systemd/system/$app.service"
 systemctl enable $app.service --quiet
@@ -114,21 +106,21 @@ systemctl enable $app.service --quiet
 #=================================================
 # RESTORE THE LOGROTATE CONFIGURATION
 #=================================================
-ynh_script_progression --message="Restoring the logrotate configuration..." --time --weight=1
+ynh_script_progression --message="Restoring the logrotate configuration..." --weight=1
 
 ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
 #=================================================
 # INTEGRATE SERVICE IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 
-yunohost service add $app --description="A short description of the app" --log="/var/log/$app/$app.log"
+yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-ynh_script_progression --message="Starting a systemd service..." --time --weight=1
+ynh_script_progression --message="Starting a systemd service..." --weight=1
 
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
@@ -137,7 +129,7 @@ ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$ap
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --time --weight=1
+ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
 ynh_systemd_action --service_name=nginx --action=reload
 
@@ -145,4 +137,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Restoration completed for $app" --time --last
+ynh_script_progression --message="Restoration completed for $app" --last
