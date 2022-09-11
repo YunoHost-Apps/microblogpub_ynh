@@ -4,3 +4,10 @@ description = "Prune old data from the inbox to reclaim disk space."
 
 cwd = "/opt/yunohost/$app"
 command = "./inv.sh prune-old-data"
+
+[self_destruct]
+name = "self-destruct"
+description = "Broadcast deletion messages to all known hosts."
+
+cwd = "/opt/yunohost/$app"
+command = "./inv.sh self-destruct"
