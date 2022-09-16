@@ -40,16 +40,17 @@
             {
                 "name": "username",
                 "type": "string",
-                "ask": {"en": "Your handle will be @username@domain"}
+                "ask": {"en": "Choose your username, your handle will be @username@domain"}
             },
             {
                 "name": "name",
-                "type": "string"
+                "type": "string",
+                "ask": {"en": "Your display name"}
             },
             {
                 "name": "summary",
                 "type": "string",
-                "ask": {"en": "Your profile summary"}
+                "ask": {"en": "Your profile summary/bio (markdown is supported)"}
             },
             {
                 "name": "password",
