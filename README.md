@@ -25,3 +25,13 @@ sudo yunohost app install https://git.sr.ht/~tsileo/microblog.pub_ynh
 ```
 sudo yunohost app upgrade microblogpub -u https://git.sr.ht/~tsileo/microblog.pub_ynh
 ```
+
+## Uninstall
+
+If you wish to uninstall the app, it is recommended to request the deletion of your remote profile:
+
+```
+sudo /opt/yunohost/microblogpub/inv.sh self-destruct
+```
+
+See [deleting the instance in the documentation](https://docs.microblog.pub/user_guide.html#deleting-the-instance) for more details.
