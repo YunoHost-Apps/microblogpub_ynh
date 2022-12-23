@@ -1,5 +1,5 @@
-SOURCE_URL=https://git.sr.ht/~tsileo/microblog.pub/archive/2.0.0-rc.10.tar.gz
-SOURCE_SUM=066a967b2a3a7b3f2617384c266085ac239137b41c94c0837cd464f3a5821922
+SOURCE_URL=https://git.sr.ht/~tsileo/microblog.pub/archive/2.0.0-rc.11.tar.gz
+SOURCE_SUM=50d04c93f448bca371a8c2b1a75e5a84404e86a9d2003a8318345d7b014b742b
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
