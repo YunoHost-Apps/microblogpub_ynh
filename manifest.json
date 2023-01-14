@@ -5,7 +5,7 @@
     "description": {
         "en": "A self-hosted, single-user, ActivityPub powered microblog."
     },
-    "version": "2.0.0-rc.11~ynh1",
+    "version": "2.0.0-rc.12~ynh1",
     "url": "https://git.sr.ht/~tsileo/microblog.pub-ynh",
     "upstream": {
         "license": "AGPL-3.0-or-later",
