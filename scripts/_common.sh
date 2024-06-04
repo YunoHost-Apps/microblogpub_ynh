@@ -4,25 +4,23 @@
 # COMMON VARIABLES
 #=================================================
 
-# dependencies used by the app
-pkg_dependencies="python3 python3-dev libxml2-dev libxslt-dev gcc libjpeg-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev wget libbz2-dev liblzma-dev libwebp-dev"
-
 #=================================================
 # PERSONAL HELPERS
 #=================================================
+
+# Python version to be installed by pyenv
 python_version=3.10.6
 
 microblogpub_install_python () {
-    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     # Install/update pyenv
-    ynh_setup_source --dest_dir="$final_path/.pyenv" --source_id=pyenv
-    export PYENV_ROOT=${final_path}/pyenv
+    ynh_setup_source --dest_dir="$install_dir/.pyenv" --source_id=pyenv
+    export PYENV_ROOT=${install_dir}/pyenv
 
-    if [ -d "$final_path/pyenv/versions" ]; then
-        old_python_version=`ls $final_path/pyenv/versions`
+    if [ -d "$install_dir/pyenv/versions" ]; then
+        old_python_version=`ls $install_dir/pyenv/versions`
         if [ ! -z "${old_python_version}" ]; then
             if [ "${old_python_version}" != "${python_version}" ]; then
-                old_python_version_path="${final_path}/pyenv/versions/${old_python_version}"
+                old_python_version_path="${install_dir}/pyenv/versions/${old_python_version}"
                 if [ -d "${old_python_version_path}" ]; then
                     ynh_print_info --message="Deleting Python ${old_python_version}"
                     ynh_secure_remove --file="${old_python_version_path}"
@@ -31,9 +29,9 @@ microblogpub_install_python () {
         fi
     fi
 
-    if [ ! -d "${final_path}/pyenv/versions/${python_version}" ]; then
+    if [ ! -d "${install_dir}/pyenv/versions/${python_version}" ]; then
         ynh_print_info --message="Installing Python ${python_version}"
-        $final_path/.pyenv/bin/pyenv install $python_version
+        $install_dir/.pyenv/bin/pyenv install $python_version
         ynh_app_setting_set --app=$YNH_APP_INSTANCE_NAME --key=python_version --value=$python_version
     else
         ynh_print_info --message="Python ${python_version} is already installed"
@@ -42,30 +40,28 @@ microblogpub_install_python () {
 
 microblogpub_install_deps () {
     ynh_print_info --message="Installing deps with poetry"
-    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     (
-        export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
+        export PATH="${install_dir}/pyenv/versions/${python_version}/bin:$PATH"
+		# pip and poetry run from the above set pyenv path and knows where to install packages
         pip install poetry
-        export POETRY_VIRTUALENVS_PATH=${final_path}/venv
-        cd $final_path/microblogpub
+        export POETRY_VIRTUALENVS_PATH=${install_dir}/venv
+        cd $install_dir/app
         poetry install
     )
 }
 
 microblogpub_update () {
     ynh_print_info --message="Updating microblogpub"
-    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
     (
-        export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
-        cd ${final_path}/microblogpub
-        export POETRY_VIRTUALENVS_PATH=${final_path}/venv
+        export PATH="${install_dir}/pyenv/versions/${python_version}/bin:$PATH"
+        cd ${install_dir}/app
+        export POETRY_VIRTUALENVS_PATH=${install_dir}/venv
         poetry run inv update
     )
 }
 
 microblogpub_set_version() {
-    local final_path="/opt/yunohost/${YNH_APP_INSTANCE_NAME}"
-    version_file="${final_path}/microblogpub/app/_version.py"
+    version_file="${install_dir}/microblogpub/app/_version.py"
     app_package_version=$(ynh_app_package_version)
     echo "VERSION_COMMIT = \"ynh${app_package_version}\"" > $version_file
 }

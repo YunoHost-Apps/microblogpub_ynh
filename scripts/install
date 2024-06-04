@@ -2,102 +2,12 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-#=================================================
-# MANAGE SCRIPT FAILURE
-#=================================================
+# should'nt be necessary since it is set during each installation
+# ynh_app_setting_set --app=$app --key=python_version --value=$python_version
 
-ynh_clean_setup () {
-	### Remove this function if there's nothing to clean before calling the remove script.
-	true
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-is_public=$YNH_APP_ARG_IS_PUBLIC
-domain=$YNH_APP_ARG_DOMAIN
-username=$YNH_APP_ARG_USERNAME
-name=$YNH_APP_ARG_NAME
-summary=$YNH_APP_ARG_SUMMARY
-password=$YNH_APP_ARG_PASSWORD
-
-### If it's a multi-instance app, meaning it can be installed several times independently
-### The id of the app as stated in the manifest is available as $YNH_APP_ID
-### The instance number is available as $YNH_APP_INSTANCE_NUMBER (equals "1", "2"...)
-### The app instance name is available as $YNH_APP_INSTANCE_NAME
-###    - the first time the app is installed, YNH_APP_INSTANCE_NAME = ynhexample
-###    - the second time the app is installed, YNH_APP_INSTANCE_NAME = ynhexample__2
-###    - ynhexample__{N} for the subsequent installations, with N=3,4...
-### The app instance name is probably what interests you most, since this is
-### guaranteed to be unique. This is a good unique identifier to define installation path,
-### db names...
-app=$YNH_APP_INSTANCE_NAME
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-ynh_script_progression --message="Validating installation parameters..." --weight=1
-
-final_path=/opt/yunohost/$app
-test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
-
-# Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=/
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression --message="Storing installation settings..." --weight=1
-
-ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=path --value=/
-ynh_app_setting_set --app=$app --key=username --value=$username
-ynh_app_setting_set --app=$app --key=python_version --value=$python_version
-
-#=================================================
-# STANDARD MODIFICATIONS
-#=================================================
-# FIND AND OPEN A PORT
-#=================================================
-ynh_script_progression --message="Finding an available port..." --weight=1
-
-# Find an available port
-port=$(ynh_find_port --port=8095)
-ynh_app_setting_set --app=$app --key=port --value=$port
-
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..." --weight=5
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..." --weight=1
-
-# Create a system user
-ynh_system_user_create --username=$app --home_dir="$final_path"
-
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
 ynh_script_progression --message="Setting up source files..." --weight=1
+ynh_setup_source --dest_dir="$install_dir/app" 
 
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-# Download, check integrity, uncompress and patch the source from app.src
-mkdir -p $final_path
-# ynh_setup_source --dest_dir="$final_path"
-ynh_setup_source --dest_dir="$final_path/microblogpub" --source_id=app
-
-#=================================================
-# SPECIFIC SETUP
-#=================================================
-# Install pyenv, a recent Python version
-#=================================================
 ynh_script_progression --message="Installing Python ${python_version}..." --weight=120
 microblogpub_install_python
 
@@ -106,11 +16,13 @@ microblogpub_install_deps
 
 ynh_script_progression --message="Setting up microblogpub config..." --weight=1
 
+# TODO hier weiter
+
 (
     # Setup initial configuration
-    export PATH="${final_path}/pyenv/versions/${python_version}/bin:$PATH"
-    cd ${final_path}/microblogpub
-    export POETRY_VIRTUALENVS_PATH=${final_path}/venv
+    export PATH="${install_dir}/pyenv/versions/${python_version}/bin:$PATH"
+    cd ${install_dir}/microblogpub
+    export POETRY_VIRTUALENVS_PATH=${install_dir}/venv
     poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
 
 )
@@ -118,17 +30,17 @@ ynh_script_progression --message="Setting up microblogpub config..." --weight=1
 microblogpub_update
 microblogpub_set_version
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
 
 # Store the venv path as a config item
-venv_name=`ls ${final_path}/venv`
-venv_path="${final_path}/venv/${venv_name}"
-ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
+venv_name=`ls ${install_dir}/venv`
+venv_path="${install_dir}/venv/${venv_name}"
+#REMOVEME? ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
 
-ynh_add_config --template="inv.sh" --destination="$final_path/inv.sh"
-chmod u+x $final_path/inv.sh
+ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
+chmod u+x $install_dir/inv.sh
 
 #=================================================
 # NGINX CONFIGURATION
@@ -187,22 +99,22 @@ ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring permissions..." --weight=1
+#REMOVEME? ynh_script_progression --message="Configuring permissions..." --weight=1
 
 # Make app public if necessary
-if [ $is_public -eq 1 ]
+#REMOVEME? if [ $is_public -eq 1 ]
 then
 	# Everyone can access the app.
 	# The "main" permission is automatically created before the install script.
-	ynh_permission_update --permission="main" --add="visitors"
+#REMOVEME? 	ynh_permission_update --permission="main" --add="visitors"
 fi
 
 #=================================================
 # RELOAD NGINX
 #=================================================
-ynh_script_progression --message="Reloading NGINX web server..." --weight=1
+#REMOVEME? ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 
-ynh_systemd_action --service_name=nginx --action=reload
+#REMOVEME? ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT

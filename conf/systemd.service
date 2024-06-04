@@ -6,12 +6,12 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
-WorkingDirectory=__FINALPATH__/microblogpub
+WorkingDirectory=__INSTALL_DIR__/microblogpub
 Environment="UVICORN_PORT=__PORT__"
 Environment="VENV_DIR=__VENV_PATH__"
-Environment="POETRY_VIRTUALENVS_PATH=__FINALPATH__/venv"
+Environment="POETRY_VIRTUALENVS_PATH=__INSTALL_DIR__/venv"
 Environment="LOG_PATH=/var/log/__APP__"
-ExecStart=__FINALPATH__/pyenv/versions/__PYTHON_VERSION__/bin/poetry run supervisord -c misc/ynh-supervisord.conf -n
+ExecStart=__INSTALL_DIR__/pyenv/versions/__PYTHON_VERSION__/bin/poetry run supervisord -c misc/ynh-supervisord.conf -n
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 

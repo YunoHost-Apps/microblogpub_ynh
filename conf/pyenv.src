@@ -1,7 +1,0 @@
-SOURCE_URL=https://github.com/pyenv/pyenv/archive/refs/tags/v2.3.3.tar.gz
-SOURCE_SUM=2a6093c922d2a420b5ae45143ab973b0a85ee486c408cb487188b64edadfab35
-SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=tar.gz
-SOURCE_IN_SUBDIR=true
-SOURCE_FILENAME=
-SOURCE_EXTRACT=true

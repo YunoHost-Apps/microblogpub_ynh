@@ -1,0 +1,79 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "microblogpub"
+name = "microblog.pub"
+description.en = "A self-hosted, single-user, ActivityPub powered microblog."
+
+version = "2.0.0-v2~ynh1"
+
+maintainers = ["Thomas Sileo"]
+
+[upstream]
+license = "AGPL-3.0-or-later"
+website = "https://docs.microblog.pub"
+demo = "https://microblog.pub"
+userdoc = "https://docs.migroblog.pub"
+code = "https://git.sr.ht/~tsileo/microblog.pub"
+# cpe = "???" # FIXME: optional but recommended if relevant, this is meant to contain the Common Platform Enumeration, which is sort of a standard id for applications defined by the NIST. In particular, Yunohost may use this is in the future to easily track CVE (=security reports) related to apps. The CPE may be obtained by searching here: https://nvd.nist.gov/products/cpe/search. For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
+# fund = "???" # FIXME: optional but recommended (or remove if irrelevant / not applicable). This is meant to be an URL where people can financially support this app, especially when its development is based on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
+
+[integration]
+yunohost = ">= 11.0.0"
+architectures = ["amd64", "i386", "arm64"]
+multi_instance = false
+ldap = "false"
+sso = "false"
+disk = "50M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.init_main_permission]
+    type = "group"
+    default = "visitors"
+
+    [install.domain]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "domain"
+
+    [install.username]
+    ask.en = "Choose your username, your handle will be @username@domain"
+    type = "string"
+
+    [install.name]
+    ask.en = "Your display name"
+    type = "string"
+
+    [install.summary]
+    ask.en = "Your profile summary/bio (markdown is supported)"
+    type = "string"
+
+    [install.password]
+    # this is a generic question - ask strings are automatically handled by Yunohost's core
+    type = "password"
+
+[resources]
+    [resources.sources]
+        [resources.sources.main]
+        url = "https://git.sr.ht/~tsileo/microblog.pub/archive/9c8693ea555d6363c8e56798df640489fa6b4f44.tar.gz"
+        sha256 = "37a987995e473d708671db1790d2a77489416ccd641989f390df83196b0d0ae9"
+
+        [resources.sources.pyenv]
+        url = "https://github.com/pyenv/pyenv/archive/refs/tags/v2.3.3.tar.gz"
+        sha256 = "2a6093c922d2a420b5ae45143ab973b0a85ee486c408cb487188b64edadfab35"
+
+
+    [resources.system_user]
+
+    [resources.install_dir]
+
+    [resources.permissions]
+    main.url = "/"
+
+    [resources.ports]
+    main.default = 8095
+
+    [resources.apt]
+    packages = "python3, python3-dev, libxml2-dev, libxslt-dev, gcc, libjpeg-dev, zlib1g-dev, libncurses5-dev, libgdbm-dev, libnss3-dev, libssl-dev, libreadline-dev, libffi-dev, libsqlite3-dev, wget, libbz2-dev, liblzma-dev, libwebp-dev"
