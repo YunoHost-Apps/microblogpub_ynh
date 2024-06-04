@@ -6,7 +6,7 @@ source /usr/share/yunohost/helpers
 # ynh_app_setting_set --app=$app --key=python_version --value=$python_version
 
 ynh_script_progression --message="Setting up source files..." --weight=1
-ynh_setup_source --dest_dir="$install_dir/app" 
+ynh_setup_source --dest_dir="${microblogpub_app}"
 
 ynh_script_progression --message="Installing Python ${python_version}..." --weight=120
 microblogpub_install_python
@@ -15,109 +15,41 @@ ynh_script_progression --message="Installing Python deps..." --weight=60
 microblogpub_install_deps
 
 ynh_script_progression --message="Setting up microblogpub config..." --weight=1
+microblogpub_initial_setup
 
-# TODO hier weiter
-
-(
-    # Setup initial configuration
-    export PATH="${install_dir}/pyenv/versions/${python_version}/bin:$PATH"
-    cd ${install_dir}/microblogpub
-    export POETRY_VIRTUALENVS_PATH=${install_dir}/venv
-    poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
-
-)
-
+# TODO why update just after installing?
+ynh_script_progression --message="Updating..." --weight=1
 microblogpub_update
+
+ynh_script_progression --message="Configure integration version to show..." --weight=1
 microblogpub_set_version
 
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R $app:www-data "$install_dir"
 
-# Store the venv path as a config item
-venv_name=`ls ${install_dir}/venv`
-venv_path="${install_dir}/venv/${venv_name}"
-#REMOVEME? ynh_app_setting_set --app=$app --key=venv_path --value=$venv_path
-
+ynh_script_progression --message="Generate wrapper vor pyenv..." --weight=1
 ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
 chmod u+x $install_dir/inv.sh
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
 ynh_script_progression --message="Configuring NGINX web server..." --weight=1
-
-### `ynh_add_nginx_config` will use the file conf/nginx.conf
-
-# Create a dedicated NGINX config
 ynh_add_nginx_config
 
-#=================================================
-# SETUP SYSTEMD
-#=================================================
 ynh_script_progression --message="Configuring a systemd service..." --weight=1
-
-### `ynh_systemd_config` is used to configure a systemd script for an app.
-# Create a dedicated systemd config
 ynh_add_systemd_config
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
 ynh_script_progression --message="Configuring log rotation..." --weight=1
-
-# Use logrotate to manage application logfile(s)
 ynh_use_logrotate
 
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-
 yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
-#=================================================
-# START SYSTEMD SERVICE
-#=================================================
 ynh_script_progression --message="Starting a systemd service..." --weight=1
-
-# Start a systemd service
 touch /var/log/$app/uvicorn.log
 chown -R $app:www-data "/var/log/$app"
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
 
-#=================================================
-# SETUP FAIL2BAN
-#=================================================
 ynh_script_progression --message="Configuring Fail2Ban..." --weight=1
-
-# Create a dedicated Fail2Ban config
 ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:.+ <HOST>:0 - \"POST /admin/login HTTP/.*\" 403 Forbidden"
-
-#=================================================
-# SETUP SSOWAT
-#=================================================
-#REMOVEME? ynh_script_progression --message="Configuring permissions..." --weight=1
-
-# Make app public if necessary
-#REMOVEME? if [ $is_public -eq 1 ]
-then
-	# Everyone can access the app.
-	# The "main" permission is automatically created before the install script.
-#REMOVEME? 	ynh_permission_update --permission="main" --add="visitors"
-fi
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-#REMOVEME? ynh_script_progression --message="Reloading NGINX web server..." --weight=1
-
-#REMOVEME? ynh_systemd_action --service_name=nginx --action=reload
-
-#=================================================
-# END OF SCRIPT
-#=================================================
 
 ynh_script_progression --message="Installation of $app completed" --last
