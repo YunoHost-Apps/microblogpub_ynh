@@ -1,19 +1,25 @@
 #!/bin/bash
 
-# path to microblog.pub istself
-microblogpub_app="$install_dir/app"
+python_version=3.10.6                                   # python version to be installed by pyenv
+microblogpub_app="$install_dir/app"                     # path to microblog.pub istself
+microblogpub_venv="$install_dir/venv"                   # path to microblog.pubs venvsa
+microblogpub_src_pyenv="$install_dir/pyenv.src"         # path to microblog.pubs pyenv sources
+microblogpub_pyenv="$install_dir/pyenv"                 # path to microblog.pubs python version
+microblogpub_bin_pyenv="${microblogpub_pyenv}/versions/${python_version}/bin" # pyenv exectutablesa
+microblogpub_active_venv='not_found'                    # initialize path to active venv
 
-# path to microblog.pubs venv
-microblogpub_venv="$install_dir/venv"
-
-# path to microblog.pubs pyenv sources
-microblogpub_src_pyenv="$install_dir/pyenv.src"
-
-# path to microblog.pubs pyenv (python version)
-microblogpub_pyenv="$install_dir/pyenv"
-
-# Python version to be installed by pyenv
-python_version=3.10.6
+microblogpub_set_active_venv() {
+    # poetry installs the venv to a path that cannot be given to it
+    # https://github.com/python-poetry/poetry/issues/2003
+    # we set the path to the active venv installed through poetry by
+    # using the apropriate poetry command: `env info --path`
+    microblogpub_active_venv=$(
+        export PATH="${microblogpub_bin_pyenv}:$PATH"
+        export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
+        cd ${microblogpub_app}
+        poetry env info --path
+    )
+}
 
 microblogpub_install_python () {
     # Install/update pyenv
@@ -45,7 +51,7 @@ microblogpub_install_python () {
 microblogpub_install_deps () {
     ynh_print_info --message="Installing deps with poetry"
     (
-        export PATH="${microblogpub_pyenv}/versions/${python_version}/bin:$PATH"
+        export PATH="${microblogpub_bin_pyenv}:$PATH"
 		# pip and poetry run from the above set pyenv path and knows where to install packages
         pip install poetry
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
@@ -57,9 +63,9 @@ microblogpub_install_deps () {
 microblogpub_update () {
     ynh_print_info --message="Updating microblogpub"
     (
-        export PATH="${microblogpub_pyenv}/versions/${python_version}/bin:$PATH"
+        export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
-        export POETRY_VIRTUALENVS_PATH=${microblogpub_pyenv}
+        export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         poetry run inv update
     )
 }
@@ -73,10 +79,9 @@ microblogpub_set_version() {
 microblogpub_initial_setup() {
     (
         # Setup initial configuration
-        export PATH="${install_dir}/pyenv/versions/${python_version}/bin:$PATH"
-        cd ${install_dir}/microblogpub
-        export POETRY_VIRTUALENVS_PATH=${install_dir}/venv
+        export PATH="${microblogpub_bin_pyenv}:$PATH"
+        cd ${microblogpub_app}
+        export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
-    
     )
 }

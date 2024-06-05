@@ -13,11 +13,14 @@ microblogpub_install_python
 
 ynh_script_progression --message="Installing Python deps..." --weight=60
 microblogpub_install_deps
+# after installing the venv through poetry set the $microblogpub_active_venv to be used
+# later to configure the systemd.service
+microblogpub_set_active_venv
 
 ynh_script_progression --message="Setting up microblogpub config..." --weight=1
 microblogpub_initial_setup
 
-# TODO why update just after installing?
+# TODO why update directly after installing?
 ynh_script_progression --message="Updating..." --weight=1
 microblogpub_update
 
