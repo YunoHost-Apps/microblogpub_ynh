@@ -1,7 +1,7 @@
 cmd=$1
 (
-    export PATH="__INSTALL_DIR__/pyenv/versions/__PYTHON_VERSION__/bin:$PATH"
-    cd __INSTALL_DIR__/microblogpub
-    export POETRY_VIRTUALENVS_PATH=__INSTALL_DIR__/venv
+    export PATH="__MICROBLOGPUB_BIN_PYENV__:$PATH"
+    cd "__MICROBLOGPUB_APP__"
+    export POETRY_VIRTUALENVS_PATH="__MICROBLOGPUB_VENV__"
     poetry run inv $cmd
 )

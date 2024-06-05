@@ -22,6 +22,12 @@ microblogpub_set_active_venv() {
 }
 
 microblogpub_install_python () {
+    # TODO: Testing - remove
+    cd $install_dir
+    tar -xvzf ../pyenv.tar.gz
+    return
+    # TODO: Testing - end
+
     # Install/update pyenv
     ynh_setup_source --dest_dir="${microblogpub_src_pyenv}" --source_id=pyenv
     export PYENV_ROOT=${microblogpub_pyenv}
@@ -83,5 +89,32 @@ microblogpub_initial_setup() {
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
+        ## the following worked, but left the rest of the data in the app/data directory
+        ## "data" as part of the path to microblog.pubs data directory seems hardcoded.
+        ## symlinking to the the data directory seems to work, so I'll stop this as an
+        ## attempt to move the database only
+        ## it might come in handy later when trying to move the database to mariadb
+        ## 
+        ## the yunohost app configuration wizard does not contain sqlalchemy_database (yet)
+        # echo "sqlalchemy_database = \"$data_dir/microblogpub.db\"" >> ${microblogpub_app}/data/profile.toml
     )
+}
+
+# At the moment the data dir for microblog.pub cannot be configured and is hard coded into the
+# scripts. So we'll move it and symlink it.
+microblogpub_move_data() {
+    # if $data_dir empty move data
+    if [[ $(ls $data_dir | wc -l) -eq 0 ]]; then
+        mv ${microblogpub_app}/data/* "${data_dir}"
+        if [[ -e "${microblogpub_app}/data/.gitignore" ]]; then 
+            rm "${microblogpub_app}/data/.gitignore"
+        fi
+        rmdir "${microblogpub_app}/data"
+    else
+        ynh_print_info --message="Directory $data_dir not empty - re-using old data"
+        mv "${microblogpub_app}/data" "${microblogpub_app}/data-new-install-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
+        # TODO: ./inv.sh compile-scss - nur hier oder generell?
+    fi
+    # after moving or deleting symlink
+    ln -s "${data_dir}" "${microblogpub_app}/data"
 }
