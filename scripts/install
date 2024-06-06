@@ -29,12 +29,11 @@ microblogpub_initialize_db
 ynh_script_progression --message="Configure integration version to show..." --weight=1
 microblogpub_set_version
 
-ynh_script_progression --message="setting file permissions..." --weight=1
-microblogpub_set_filepermissions
-
 ynh_script_progression --message="Generate wrapper vor pyenv..." --weight=1
 ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
-chmod u+x $install_dir/inv.sh
+
+ynh_script_progression --message="setting file permissions..." --weight=1
+microblogpub_set_filepermissions
 
 ynh_script_progression --message="Configuring NGINX web server..." --weight=1
 ynh_add_nginx_config
