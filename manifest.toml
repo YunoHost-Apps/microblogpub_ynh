@@ -6,7 +6,7 @@ id = "microblogpub"
 name = "microblog.pub"
 description.en = "A self-hosted, single-user, ActivityPub powered microblog."
 
-version = "2.0.0-v2~ynh1"
+version = "2.0.0~ynh2"
 
 maintainers = ["Thomas Sileo"]
 
@@ -23,8 +23,8 @@ code = "https://git.sr.ht/~tsileo/microblog.pub"
 yunohost = ">= 11.0.0"
 architectures = ["amd64", "i386", "arm64"]
 multi_instance = false
-ldap = "false"
-sso = "false"
+ldap = false
+sso = false
 disk = "50M"
 ram.build = "50M"
 ram.runtime = "50M"
