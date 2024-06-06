@@ -33,6 +33,8 @@ test_format = 1.0
     # It should only make sense to declare custom args here for args with no default values
     
     args.username = "username"
+    args.name = "name"
+    args.summary = "summary"
     # args.language = "fr_FR"    # NB : you should NOT need those lines unless for custom questions with no obvious/default value
     # args.multisite = 0
 
