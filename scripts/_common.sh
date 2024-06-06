@@ -30,12 +30,6 @@ microblogpub_set_filepermissions() {
 }
 
 microblogpub_install_python() {
-    # TODO: Testing - remove
-    cd $install_dir
-    tar -xvzf ../pyenv.tar.gz
-    return
-    # TODO: Testing - end
-
     # Install/update pyenv
     ynh_setup_source --dest_dir="${microblogpub_src_pyenv}" --source_id=pyenv
     export PYENV_ROOT=${microblogpub_pyenv}
