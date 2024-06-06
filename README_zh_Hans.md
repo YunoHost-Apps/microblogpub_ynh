@@ -21,7 +21,7 @@ A self-hosted, single-user, ActivityPub powered microblog.
 not read for use
 
 
-**分发版本：** 2.0.0-v2~ynh1
+**分发版本：** 2.0.0~ynh2
 
 **演示：** <https://microblog.pub>
 

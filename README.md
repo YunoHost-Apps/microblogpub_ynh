@@ -21,7 +21,7 @@ A self-hosted, single-user, ActivityPub powered microblog.
 not read for use
 
 
-**Shipped version:** 2.0.0-v2~ynh1
+**Shipped version:** 2.0.0~ynh2
 
 **Demo:** <https://microblog.pub>
 
