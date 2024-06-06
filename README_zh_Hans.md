@@ -29,11 +29,6 @@ not read for use
 
 ![microblog.pub 的截图](./doc/screenshots/microblogpub_demo.png)
 
-## 免责声明 / 重要信息
-
-* Requires a dedicated domain
-* You should not re-use a domain that was hosting another Fediverse software unless you know what you're doing
-
 ## 文档与资源
 
 - 官方应用网站： <https://docs.microblog.pub>

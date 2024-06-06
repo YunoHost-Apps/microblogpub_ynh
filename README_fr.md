@@ -29,11 +29,6 @@ not read for use
 
 ![Capture d’écran de microblog.pub](./doc/screenshots/microblogpub_demo.png)
 
-## Avertissements / informations importantes
-
-* Requires a dedicated domain
-* You should not re-use a domain that was hosting another Fediverse software unless you know what you're doing
-
 ## Documentations et ressources
 
 - Site officiel de l’app : <https://docs.microblog.pub>
