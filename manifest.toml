@@ -4,7 +4,8 @@ packaging_format = 2
 
 id = "microblogpub"
 name = "microblog.pub"
-description.en = "A self-hosted, single-user, ActivityPub powered microblog."
+description.en = "Single-user ActivityPub powered microblog"
+description.fr = "Microblog mono-utilisateur alimenté par ActivityPub"
 
 version = "2.0.0~ynh2"
 
