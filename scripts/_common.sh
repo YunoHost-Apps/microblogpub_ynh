@@ -22,6 +22,7 @@ microblogpub_set_active_venv() {
 }
 
 microblogpub_set_filepermissions() {
+    local dir
     chmod 750 "$install_dir" "$data_dir"
     chmod -R o-rwx "$install_dir" "$data_dir"
     chown -R $app:www-data "$install_dir" "$data_dir"
@@ -101,6 +102,7 @@ microblogpub_initial_setup() {
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
+        poetry run inv compile-scss
         ## the following worked, but left the rest of the data in the app/data directory
         ## "data" as part of the path to microblog.pubs data directory seems hardcoded.
         ## symlinking to the the data directory seems to work, so I'll stop this as an
