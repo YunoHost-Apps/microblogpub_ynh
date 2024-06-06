@@ -21,7 +21,15 @@ microblogpub_set_active_venv() {
     )
 }
 
-microblogpub_install_python () {
+microblogpub_set_filepermissions() {
+    chmod 750 "$install_dir" "$data_dir"
+    chmod -R o-rwx "$install_dir" "$data_dir"
+    chown -R $app:www-data "$install_dir" "$data_dir"
+    chmod u+x $install_dir/inv.sh
+    chown -R $app:www-data "/var/log/$app"
+}
+
+microblogpub_install_python() {
     # TODO: Testing - remove
     cd $install_dir
     tar -xvzf ../pyenv.tar.gz
@@ -66,6 +74,16 @@ microblogpub_install_deps () {
     )
 }
 
+microblogpub_initialize_db() {
+    (
+        export PATH="${microblogpub_bin_pyenv}:$PATH"
+        cd ${microblogpub_app}
+        export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
+        poetry run inv migrate-db
+    )
+}
+
+# updates python environment and initializes/updates database
 microblogpub_update () {
     ynh_print_info --message="Updating microblogpub"
     (

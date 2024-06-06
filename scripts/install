@@ -8,6 +8,9 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Setting up source files..." --weight=1
 ynh_setup_source --dest_dir="${microblogpub_app}"
 
+ynh_script_progression --message="moving ${microblogpub_app}/data dir to ${data_dir}..." --weight=1
+microblogpub_move_data
+
 ynh_script_progression --message="Installing Python ${python_version}..." --weight=120
 microblogpub_install_python
 
@@ -20,19 +23,14 @@ microblogpub_set_active_venv
 ynh_script_progression --message="Setting up microblogpub config..." --weight=1
 microblogpub_initial_setup
 
-# TODO why update directly after installing?
-# ynh_script_progression --message="Updating..." --weight=1
-# microblogpub_update
+ynh_script_progression --message="Initializing database..." --weight=1
+microblogpub_initialize_db
 
 ynh_script_progression --message="Configure integration version to show..." --weight=1
 microblogpub_set_version
 
-ynh_script_progression --message="moving ${microblogpub_app}/data dir to ${data_dir}..." --weight=1
-microblogpub_move_data
-
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
-chown -R $app:www-data "$install_dir" "$data_dir"
+ynh_script_progression --message="setting file permissions..." --weight=1
+microblogpub_set_filepermissions
 
 ynh_script_progression --message="Generate wrapper vor pyenv..." --weight=1
 ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
@@ -47,6 +45,9 @@ ynh_add_systemd_config
 ynh_script_progression --message="Configuring log rotation..." --weight=1
 ynh_use_logrotate
 
+ynh_script_progression --message="Configuring Fail2Ban..." --weight=1
+ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:.+ <HOST>:0 - \"POST /admin/login HTTP/.*\" 403 Forbidden"
+
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
@@ -55,8 +56,5 @@ touch /var/log/$app/uvicorn.log
 chown -R $app:www-data "/var/log/$app"
 # TODO look for string in logfile that confirms successful start
 ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
-
-ynh_script_progression --message="Configuring Fail2Ban..." --weight=1
-ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:.+ <HOST>:0 - \"POST /admin/login HTTP/.*\" 403 Forbidden"
 
 ynh_script_progression --message="Installation of $app completed" --last
