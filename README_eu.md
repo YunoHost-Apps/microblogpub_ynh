@@ -18,6 +18,8 @@ EZ editatu eskuz.
 
 A self-hosted, single-user, ActivityPub powered microblog.
 
+not read for use
+
 
 **Paketatutako bertsioa:** 2.0.0-v2~ynh1
 
