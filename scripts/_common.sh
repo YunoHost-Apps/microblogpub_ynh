@@ -7,6 +7,7 @@ microblogpub_src_pyenv="$install_dir/pyenv.src"         # path to microblog.pubs
 microblogpub_pyenv="$install_dir/pyenv"                 # path to microblog.pubs python version
 microblogpub_bin_pyenv="${microblogpub_pyenv}/versions/${python_version}/bin" # pyenv exectutablesa
 microblogpub_active_venv='not_found'                    # initialize path to active venv
+fpm_usage=medium
 
 microblogpub_set_active_venv() {
     # poetry installs the venv to a path that cannot be given to it
