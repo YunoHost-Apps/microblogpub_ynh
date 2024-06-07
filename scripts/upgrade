@@ -4,7 +4,7 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 # migrating from microblog_ynh package version v1 from sr.ht
-if [[ $(ynh_app_setting_get --key='installed_from') == 'YunohostV2catalogVersion' ]]; then
+if [[ $(ynh_app_setting_get --key='installed_from') != 'YunohostV2catalogVersion' ]]; then
     # TODO ynh_die --message="Upgrading from packaging format v1 not supported, yet."
 
     # rename microblogpub/microblogpub to microblogpub/app
@@ -13,7 +13,9 @@ if [[ $(ynh_app_setting_get --key='installed_from') == 'YunohostV2catalogVersion
 
     # remove old .pyenv pyenv and venv directories
 	ynh_script_progression --message="upgrade from package-format v1: removing old python env" --weight=1
-    rm -rf "/var/www/${app}/.pyenv" "/var/www/${app}/pyenv" "/var/www/${app}/venv"
+    ynh_secure_remove --file="/var/www/${app}/.pyenv" 
+    ynh_secure_remove --file="/var/www/${app}/pyenv" 
+    ynh_secure_remove --file="/var/www/${app}/venv"
 
 	ynh_script_progression --message="upgrade from package-format v1: move data to $data_dir" --weight=1
     microblogpub_move_data
@@ -50,7 +52,14 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]; then
     microblogpub_install_python
 
 	ynh_script_progression --message="Upgrading source files..." --weight=1
-	ynh_setup_source --dest_dir="${microblogpub_app}"  --keep="data/"
+	# ynh_setup_source --dest_dir="${microblogpub_app}"  --keep="data"
+    # after extracting the new version there's a new directory ./data that can't
+    # be overwritten by ynh_setup_source with the symlink it backed up
+    # WARNING cp: cannot overwrite directory '/var/www/microblogpub/app/data' with non-directory
+    # this is the reason, why we just overwrite the source and then restore the
+    # symlink
+    ynh_setup_source --dest_dir="${microblogpub_app}"
+    microblogpub_move_data
 
 	ynh_script_progression --message="Upgrading dependencies..." --weight=1
     microblogpub_install_deps

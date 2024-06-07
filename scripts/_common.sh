@@ -127,8 +127,9 @@ microblogpub_move_data() {
         rmdir "${microblogpub_app}/data"
     else
         ynh_print_info --message="Directory $data_dir not empty - re-using old data"
-        mv "${microblogpub_app}/data" "${microblogpub_app}/data-new-install-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
-        # TODO: ./inv.sh compile-scss - nur hier oder generell?
+        # TODO this will eventually leave some data-<date> directories that need to 
+        # be cleaned up → https://todo.sr.ht/~chrichri/microblog.pub_ynh_v2/6
+        mv "${microblogpub_app}/data" "${microblogpub_app}/data-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
     fi
     # after moving or deleting symlink
     ln -s "${data_dir}" "${microblogpub_app}/data"
