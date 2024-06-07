@@ -4,14 +4,14 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_script_progression --message="Setting up python ${python_version}..." --weight=50
-microblogpub_install_python
+# ynh_script_progression --message="Setting up python ${python_version}..." --weight=50
+# microblogpub_install_python
 
 ynh_script_progression --message="Restoring the app main directory..." --weight=50
 ynh_restore_file --origin_path="${microblogpub_app}"
 
-ynh_script_progression --message="Installing dependencies..." --weight=50
-microblogpub_install_deps
+# ynh_script_progression --message="Installing dependencies..." --weight=50
+# microblogpub_install_deps
 
 ynh_script_progression --message="Restoring inv.sh..." --weight=50
 ynh_restore_file --origin_path="${install_dir}/inv.sh"
@@ -19,6 +19,7 @@ ynh_restore_file --origin_path="${install_dir}/inv.sh"
 ynh_script_progression --message="Restoring data..." --weight=50
 ynh_restore_file --origin_path="${data_dir}"
 
+# TODO backup logs with --big
 # Re-create the logs dir
 mkdir /var/log/$app
 # Make fail2ban happy

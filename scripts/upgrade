@@ -3,6 +3,25 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+# migrating from microblog_ynh package version v1 from sr.ht
+if [[ $(ynh_app_setting_get --key='installed_from') == 'YunohostV2catalogVersion' ]]; then
+    # TODO ynh_die --message="Upgrading from packaging format v1 not supported, yet."
+
+    # rename microblogpub/microblogpub to microblogpub/app
+	ynh_script_progression --message="upgrade from package-format v1: renaming app directory" --weight=1
+    mv "/var/www/${app}/microblogpub" "/var/www/${app}/app"
+
+    # remove old .pyenv pyenv and venv directories
+	ynh_script_progression --message="upgrade from package-format v1: removing old python env" --weight=1
+    rm -rf "/var/www/${app}/.pyenv" "/var/www/${app}/pyenv" "/var/www/${app}/venv"
+
+	ynh_script_progression --message="upgrade from package-format v1: move data to $data_dir" --weight=1
+    microblogpub_move_data
+
+    ynh_script_progression --message="Mark this as updated to V2 app integration..." --weight=1
+    ynh_app_setting_set --key='installed_from' --value='YunohostV2catalogVersion'
+fi
+
 ### This helper will compare the version of the currently installed app and the version of the upstream package.
 ### $upgrade_type can have 2 different values
 ### - UPGRADE_APP if the upstream app version has changed
@@ -18,10 +37,13 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app
 ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
 chmod u+x $install_dir/inv.sh
 
-if [ "$upgrade_type" == "UPGRADE_PACKAGE" ]; then
-    microblogpub_install_python
-    microblogpub_install_deps
-fi
+# TODO
+# if only the yunohost integration has changed there is no need to upgrade
+# python and the installed dependencies - or is there?
+# if [ "$upgrade_type" == "UPGRADE_PACKAGE" ]; then
+#     microblogpub_install_python
+#     microblogpub_install_deps
+# fi
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]; then
 	ynh_script_progression --message="Upgrading python to $python_version..." --weight=1
@@ -38,10 +60,10 @@ if [ "$upgrade_type" == "UPGRADE_APP" ]; then
 
     ynh_script_progression --message="Running microblog.pub update script..." --weight=1
     microblogpub_update
-fi
 
-ynh_script_progression --message="Setting yunohost version to be shown on page..." --weight=1
-microblogpub_set_version
+    ynh_script_progression --message="Setting yunohost version to be shown on page..." --weight=1
+    microblogpub_set_version
+fi
 
 ynh_script_progression --message="Setting file permissions..." --weight=1
 microblogpub_set_filepermissions
