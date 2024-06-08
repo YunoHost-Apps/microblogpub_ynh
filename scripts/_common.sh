@@ -59,14 +59,14 @@ microblogpub_install_python() {
 }
 
 microblogpub_install_deps () {
-    ynh_print_info --message="Installing deps with poetry"
+    ynh_print_info --message="Installing dependencies with poetry"
     (
         export PATH="${microblogpub_bin_pyenv}:$PATH"
 		# pip and poetry run from the above set pyenv path and knows where to install packages
         pip --quiet install poetry 2>&1
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         cd ${microblogpub_app}
-        poetry install --no-root
+        poetry install --no-root 2>&1
     )
 }
 
