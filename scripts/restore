@@ -13,8 +13,8 @@ ynh_restore_file --origin_path="${install_dir}"
 # ynh_script_progression --message="Installing dependencies..." --weight=50
 # microblogpub_install_deps
 
-ynh_script_progression --message="Restoring inv.sh..." --weight=50
-ynh_restore_file --origin_path="${install_dir}/inv.sh"
+# ynh_script_progression --message="Restoring inv.sh..." --weight=50
+# ynh_restore_file --origin_path="${install_dir}/inv.sh"
 
 ynh_script_progression --message="Restoring data..." --weight=50
 ynh_restore_file --origin_path="${data_dir}"
