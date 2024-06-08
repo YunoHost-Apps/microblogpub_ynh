@@ -102,9 +102,22 @@ microblogpub_initial_setup() {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        # TODO why does this fail on re-install on CI:
-        poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}" 2>&1 || true
+
+        # CI fails when key.pem or profile.toml exist already
+        # TODO: https://git.sr.ht/~tsileo/microblog.pub/tree/v2/item/app/utils/yunohost.py#L25 ff.
+        # there's no message for the case that key.pem already exists - open an issue/pr for that
+        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]] 
+        then
+            ynh_print_warn --message="key.pem and profile.toml exist. No new config generated"
+        elif [[ -s "${microblogpub_app}/data/key.pem" ]] || [[ -s "${microblogpub_app}/data/profile.toml" ]]
+        then
+            ynh_die --message="key.pem OR profile.toml exist already, but the other one is missing."
+        else
+             poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
+                --name="${name}" --summary="${summary}" --password="${password}" 2>&1
+        fi
         poetry run inv compile-scss 2>&1
+
         ## the following worked, but left the rest of the data in the app/data directory
         ## "data" as part of the path to microblog.pubs data directory seems hardcoded.
         ## symlinking to the the data directory seems to work, so I'll stop this as an
