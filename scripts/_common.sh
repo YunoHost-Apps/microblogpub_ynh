@@ -51,7 +51,7 @@ microblogpub_install_python() {
 
     if [ ! -d "${microblogpub_pyenv}/versions/${python_version}" ]; then
         ynh_print_info --message="Installing Python ${python_version}"
-        ${microblogpub_src_pyenv}/bin/pyenv install $python_version
+        ${microblogpub_src_pyenv}/bin/pyenv install $python_version 2>&1
         ynh_app_setting_set --app=$YNH_APP_INSTANCE_NAME --key=python_version --value=$python_version
     else
         ynh_print_info --message="Python ${python_version} is already installed"
@@ -63,10 +63,10 @@ microblogpub_install_deps () {
     (
         export PATH="${microblogpub_bin_pyenv}:$PATH"
 		# pip and poetry run from the above set pyenv path and knows where to install packages
-        pip install poetry
+        pip --quiet install poetry 2>&1
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         cd ${microblogpub_app}
-        poetry install
+        poetry install --no-root
     )
 }
 
@@ -75,7 +75,7 @@ microblogpub_initialize_db() {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv migrate-db
+        poetry run inv migrate-db 2>&1
     )
 }
 
@@ -86,7 +86,7 @@ microblogpub_update () {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv update
+        poetry run inv update 2>&1
     )
 }
 
@@ -102,8 +102,8 @@ microblogpub_initial_setup() {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
-        poetry run inv compile-scss
+        poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}" 2>&1
+        poetry run inv compile-scss 2>&1
         ## the following worked, but left the rest of the data in the app/data directory
         ## "data" as part of the path to microblog.pubs data directory seems hardcoded.
         ## symlinking to the the data directory seems to work, so I'll stop this as an
