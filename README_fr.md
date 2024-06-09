@@ -18,8 +18,6 @@ Il NE doit PAS être modifié à la main.
 
 A self-hosted, single-user, ActivityPub powered microblog.
 
-not read for use
-
 
 **Version incluse :** 2.0.0~ynh2
 

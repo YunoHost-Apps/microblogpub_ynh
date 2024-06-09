@@ -5,8 +5,6 @@ source /usr/share/yunohost/helpers
 
 # migrating from microblog_ynh package version v1 from sr.ht
 if [[ $(ynh_app_setting_get --key='installed_from') != 'YunohostV2catalogVersion' ]]; then
-    # TODO ynh_die --message="Upgrading from packaging format v1 not supported, yet."
-
     # rename microblogpub/microblogpub to microblogpub/app
 	ynh_script_progression --message="upgrade from package-format v1: renaming app directory" --weight=1
     mv "/var/www/${app}/microblogpub" "/var/www/${app}/app"
@@ -38,14 +36,6 @@ ynh_systemd_action --service_name=$app --action="stop" --log_path="/var/log/$app
 
 ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
 chmod u+x $install_dir/inv.sh
-
-# TODO
-# if only the yunohost integration has changed there is no need to upgrade
-# python and the installed dependencies - or is there?
-# if [ "$upgrade_type" == "UPGRADE_PACKAGE" ]; then
-#     microblogpub_install_python
-#     microblogpub_install_deps
-# fi
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]; then
 	ynh_script_progression --message="Upgrading python to $python_version..." --weight=1
