@@ -7,6 +7,7 @@ microblogpub_src_pyenv="$install_dir/pyenv.src"         # path to microblog.pubs
 microblogpub_pyenv="$install_dir/pyenv"                 # path to microblog.pubs python version
 microblogpub_bin_pyenv="${microblogpub_pyenv}/versions/${python_version}/bin" # pyenv exectutablesa
 microblogpub_active_venv='not_found'                    # initialize path to active venv
+fpm_usage=medium
 
 microblogpub_set_active_venv() {
     # poetry installs the venv to a path that cannot be given to it
@@ -22,6 +23,7 @@ microblogpub_set_active_venv() {
 }
 
 microblogpub_set_filepermissions() {
+    local dir
     chmod 750 "$install_dir" "$data_dir"
     chmod -R o-rwx "$install_dir" "$data_dir"
     chown -R $app:www-data "$install_dir" "$data_dir"
@@ -30,12 +32,6 @@ microblogpub_set_filepermissions() {
 }
 
 microblogpub_install_python() {
-    # TODO: Testing - remove
-    cd $install_dir
-    tar -xvzf ../pyenv.tar.gz
-    return
-    # TODO: Testing - end
-
     # Install/update pyenv
     ynh_setup_source --dest_dir="${microblogpub_src_pyenv}" --source_id=pyenv
     export PYENV_ROOT=${microblogpub_pyenv}
@@ -55,7 +51,7 @@ microblogpub_install_python() {
 
     if [ ! -d "${microblogpub_pyenv}/versions/${python_version}" ]; then
         ynh_print_info --message="Installing Python ${python_version}"
-        ${microblogpub_src_pyenv}/bin/pyenv install $python_version
+        ${microblogpub_src_pyenv}/bin/pyenv install $python_version 2>&1
         ynh_app_setting_set --app=$YNH_APP_INSTANCE_NAME --key=python_version --value=$python_version
     else
         ynh_print_info --message="Python ${python_version} is already installed"
@@ -63,14 +59,14 @@ microblogpub_install_python() {
 }
 
 microblogpub_install_deps () {
-    ynh_print_info --message="Installing deps with poetry"
+    ynh_print_info --message="Installing dependencies with poetry"
     (
         export PATH="${microblogpub_bin_pyenv}:$PATH"
 		# pip and poetry run from the above set pyenv path and knows where to install packages
-        pip install poetry
+        pip --quiet install poetry 2>&1
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
         cd ${microblogpub_app}
-        poetry install
+        poetry install --no-root 2>&1
     )
 }
 
@@ -79,7 +75,7 @@ microblogpub_initialize_db() {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv migrate-db
+        poetry run inv migrate-db 2>&1
     )
 }
 
@@ -90,7 +86,7 @@ microblogpub_update () {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv update
+        poetry run inv update 2>&1
     )
 }
 
@@ -106,7 +102,22 @@ microblogpub_initial_setup() {
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
         export POETRY_VIRTUALENVS_PATH=${microblogpub_venv}
-        poetry run inv yunohost-config --domain="${domain}" --username="${username}" --name="${name}" --summary="${summary}" --password="${password}"
+
+        # CI fails when key.pem or profile.toml exist already
+        # TODO: https://git.sr.ht/~tsileo/microblog.pub/tree/v2/item/app/utils/yunohost.py#L25 ff.
+        # there's no message for the case that key.pem already exists - open an issue/pr for that
+        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]] 
+        then
+            ynh_print_warn --message="key.pem and profile.toml exist. No new config generated"
+        elif [[ -s "${microblogpub_app}/data/key.pem" ]] || [[ -s "${microblogpub_app}/data/profile.toml" ]]
+        then
+            ynh_die --message="key.pem OR profile.toml exist already, but the other one is missing."
+        else
+             poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
+                --name="${name}" --summary="${summary}" --password="${password}" 2>&1
+        fi
+        poetry run inv compile-scss 2>&1
+
         ## the following worked, but left the rest of the data in the app/data directory
         ## "data" as part of the path to microblog.pubs data directory seems hardcoded.
         ## symlinking to the the data directory seems to work, so I'll stop this as an
@@ -130,8 +141,9 @@ microblogpub_move_data() {
         rmdir "${microblogpub_app}/data"
     else
         ynh_print_info --message="Directory $data_dir not empty - re-using old data"
-        mv "${microblogpub_app}/data" "${microblogpub_app}/data-new-install-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
-        # TODO: ./inv.sh compile-scss - nur hier oder generell?
+        # TODO this will eventually leave some data-<date> directories that need to 
+        # be cleaned up → https://todo.sr.ht/~chrichri/microblog.pub_ynh_v2/6
+        mv "${microblogpub_app}/data" "${microblogpub_app}/data-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
     fi
     # after moving or deleting symlink
     ln -s "${data_dir}" "${microblogpub_app}/data"

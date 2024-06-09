@@ -18,19 +18,16 @@ It shall NOT be edited by hand.
 
 A self-hosted, single-user, ActivityPub powered microblog.
 
+not read for use
 
-**Shipped version:** 2.0.0-v2~ynh1
+
+**Shipped version:** 2.0.0~ynh2
 
 **Demo:** <https://microblog.pub>
 
 ## Screenshots
 
 ![Screenshot of microblog.pub](./doc/screenshots/microblogpub_demo.png)
-
-## Disclaimers / important information
-
-* Requires a dedicated domain
-* You should not re-use a domain that was hosting another Fediverse software unless you know what you're doing
 
 ## Documentation and resources
 

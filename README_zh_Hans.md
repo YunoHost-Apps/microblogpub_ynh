@@ -18,19 +18,16 @@
 
 A self-hosted, single-user, ActivityPub powered microblog.
 
+not read for use
 
-**分发版本：** 2.0.0-v2~ynh1
+
+**分发版本：** 2.0.0~ynh2
 
 **演示：** <https://microblog.pub>
 
 ## 截图
 
 ![microblog.pub 的截图](./doc/screenshots/microblogpub_demo.png)
-
-## 免责声明 / 重要信息
-
-* Requires a dedicated domain
-* You should not re-use a domain that was hosting another Fediverse software unless you know what you're doing
 
 ## 文档与资源
 
