@@ -7,7 +7,7 @@ source /usr/share/yunohost/helpers
 ynh_print_info --message="Declaring files to be backed up..."
 
 # Thomas: Note that we don't backup Python/the venv as it can be easily rebuilt
-# TODO me: but if I find an old archive and can't download the apropriate environment
+# me: but if I find an old archive and can't download the apropriate environment
 # anymore, but want to run that version? I disagree.
 # ynh_backup --src_path="${microblogpub_app}"
 # ynh_backup --src_path="${install_dir}/inv.sh"
