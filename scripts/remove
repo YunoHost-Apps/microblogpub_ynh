@@ -25,7 +25,6 @@ ynh_remove_fail2ban_config
 # purge logfiles
 if [[ $YNH_APP_PURGE -eq 1 ]]; then
   ynh_script_progression --message="Removing logfiles..." --weight=1
-  ynh_secure_remove --file="/var/log/$app"
 else
   ynh_script_progression --message="Purge not selected - not deleting logfiles..." --weight=1
 fi
