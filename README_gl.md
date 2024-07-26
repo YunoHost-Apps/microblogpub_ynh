@@ -5,7 +5,7 @@ NON debe editarse manualmente.
 
 # microblog.pub para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/microblogpub.svg)](https://dash.yunohost.org/appci/app/microblogpub) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
+[![Nivel de integración](https://dash.yunohost.org/integration/microblogpub.svg)](https://ci-apps.yunohost.org/ci/apps/microblogpub/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
 
 [![Instalar microblog.pub con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=microblogpub)
 
