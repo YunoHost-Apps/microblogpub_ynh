@@ -10,24 +10,12 @@ then
 	yunohost service remove $app
 fi
 
-ynh_script_progression --message="Stopping and removing the systemd service..." --weight=1
 ynh_remove_systemd_config
 
-ynh_script_progression --message="Removing logrotate configuration..." --weight=1
 ynh_remove_logrotate
 
-ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
 ynh_remove_nginx_config
 
-ynh_script_progression --message="Removing Fail2Ban configuration..." --weight=1
 ynh_remove_fail2ban_config
-
-# purge logfiles
-if [[ $YNH_APP_PURGE -eq 1 ]]; then
-  ynh_script_progression --message="Removing logfiles..." --weight=1
-  ynh_secure_remove --file="/var/log/$app"
-else
-  ynh_script_progression --message="Purge not selected - not deleting logfiles..." --weight=1
-fi
 
 ynh_script_progression --message="Removal of $app completed" --last
