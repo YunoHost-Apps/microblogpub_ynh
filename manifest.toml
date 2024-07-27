@@ -9,7 +9,7 @@ description.fr = "Microblog mono-utilisateur alimenté par ActivityPub"
 
 # version from v1 package 2.0.0-rc.12~ynh1
 # yunohost doesn't like 'rc', so:
-version = "2.0.0~ynh2"
+version = "2.0.0~ynh3"
 
 maintainers = ["Thomas Sileo"]
 
@@ -19,11 +19,9 @@ website = "https://docs.microblog.pub"
 demo = "https://microblog.pub"
 userdoc = "https://docs.migroblog.pub"
 code = "https://git.sr.ht/~tsileo/microblog.pub"
-# cpe = "???" # not yet
-# fund = "???" # not yet
 
 [integration]
-yunohost = ">= 11.0.0"
+yunohost = ">= 11.2.21"
 architectures = ["amd64", "i386", "arm64"]
 multi_instance = false
 ldap = false
@@ -38,7 +36,6 @@ ram.runtime = "500M"
     default = "visitors"
 
     [install.domain]
-    # this is a generic question - ask strings are automatically handled by Yunohost's core
     type = "domain"
 
     [install.username]

@@ -5,7 +5,7 @@
 
 # YunoHost 上的 microblog.pub
 
-[![集成程度](https://dash.yunohost.org/integration/microblogpub.svg)](https://dash.yunohost.org/appci/app/microblogpub) ![工作状态](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/microblogpub.svg)](https://ci-apps.yunohost.org/ci/apps/microblogpub/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
 
 [![使用 YunoHost 安装 microblog.pub](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=microblogpub)
 
@@ -19,7 +19,7 @@
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**分发版本：** 2.0.0~ynh2
+**分发版本：** 2.0.0~ynh3
 
 **演示：** <https://microblog.pub>
 

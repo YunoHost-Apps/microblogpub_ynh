@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # microblog.pub YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/microblogpub.svg)](https://dash.yunohost.org/appci/app/microblogpub) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/microblogpub.svg)](https://ci-apps.yunohost.org/ci/apps/microblogpub/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
 
 [![Instalatu microblog.pub YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=microblogpub)
 
@@ -19,7 +19,7 @@ EZ editatu eskuz.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Paketatutako bertsioa:** 2.0.0~ynh2
+**Paketatutako bertsioa:** 2.0.0~ynh3
 
 **Demoa:** <https://microblog.pub>
 
