@@ -19,7 +19,7 @@ Ini TIDAK boleh diedit dengan tangan.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Versi terkirim:** 2.0.0~ynh2
+**Versi terkirim:** 2.0.0~ynh3
 
 **Demo:** <https://microblog.pub>
 

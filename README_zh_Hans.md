@@ -19,7 +19,7 @@
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**分发版本：** 2.0.0~ynh2
+**分发版本：** 2.0.0~ynh3
 
 **演示：** <https://microblog.pub>
 

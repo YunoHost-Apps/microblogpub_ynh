@@ -19,7 +19,7 @@ No se debe editar a mano.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Versión actual:** 2.0.0~ynh2
+**Versión actual:** 2.0.0~ynh3
 
 **Demo:** <https://microblog.pub>
 
