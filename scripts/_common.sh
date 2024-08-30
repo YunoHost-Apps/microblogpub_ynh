@@ -7,7 +7,7 @@ microblogpub_src_pyenv="$install_dir/pyenv.src"         # path to microblog.pubs
 microblogpub_pyenv="$install_dir/pyenv"                 # path to microblog.pubs python version
 microblogpub_bin_pyenv="${microblogpub_pyenv}/versions/${python_version}/bin" # pyenv exectutablesa
 microblogpub_active_venv='not_found'                    # initialize path to active venv
-fpm_usage=medium
+#REMOVEME? Everything about fpm_usage is removed in helpers2.1... | fpm_usage=medium
 
 microblogpub_set_active_venv() {
     # poetry installs the venv to a path that cannot be given to it
@@ -28,7 +28,7 @@ microblogpub_set_filepermissions() {
     chmod -R o-rwx "$install_dir" "$data_dir"
     chown -R $app:www-data "$install_dir" "$data_dir"
     chmod u+x $install_dir/inv.sh
-    chown -R $app:www-data "/var/log/$app"
+    #REMOVEME? Assuming ynh_config_add_logrotate is called, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "/var/log/$app"
 }
 
 microblogpub_install_python() {
@@ -42,24 +42,25 @@ microblogpub_install_python() {
             if [ "${old_python_version}" != "${python_version}" ]; then
                 local old_python_version_path="${microblogpub_pyenv}/versions/${old_python_version}"
                 if [ -d "${old_python_version_path}" ]; then
-                    ynh_print_info --message="Deleting Python ${old_python_version}"
-                    ynh_secure_remove --file="${old_python_version_path}"
+                    ynh_print_info "Deleting Python ${old_python_version}"
+                    ynh_safe_rm "${old_python_version_path}"
                 fi
             fi
         fi
     fi
 
     if [ ! -d "${microblogpub_pyenv}/versions/${python_version}" ]; then
-        ynh_print_info --message="Installing Python ${python_version}"
+        ynh_print_info "Installing Python ${python_version}"
         ${microblogpub_src_pyenv}/bin/pyenv install $python_version 2>&1
         ynh_app_setting_set --app=$YNH_APP_INSTANCE_NAME --key=python_version --value=$python_version
     else
-        ynh_print_info --message="Python ${python_version} is already installed"
-    fi 
+        ynh_print_info "Python ${python_version} is already installed"
+    fi
+
 }
 
 microblogpub_install_deps () {
-    ynh_print_info --message="Installing dependencies with poetry"
+    ynh_print_info "Installing dependencies with poetry"
     (
         export PATH="${microblogpub_bin_pyenv}:$PATH"
 		# pip and poetry run from the above set pyenv path and knows where to install packages
@@ -81,7 +82,7 @@ microblogpub_initialize_db() {
 
 # updates python environment and initializes/updates database
 microblogpub_update () {
-    ynh_print_info --message="Updating microblogpub"
+    ynh_print_info "Updating microblogpub"
     (
         export PATH="${microblogpub_bin_pyenv}:$PATH"
         cd ${microblogpub_app}
@@ -106,12 +107,13 @@ microblogpub_initial_setup() {
         # CI fails when key.pem or profile.toml exist already
         # TODO: https://git.sr.ht/~tsileo/microblog.pub/tree/v2/item/app/utils/yunohost.py#L25 ff.
         # there's no message for the case that key.pem already exists - open an issue/pr for that
-        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]] 
+        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]]
+
         then
-            ynh_print_warn --message="key.pem and profile.toml exist. No new config generated"
+            ynh_print_warn "key.pem and profile.toml exist. No new config generated"
         elif [[ -s "${microblogpub_app}/data/key.pem" ]] || [[ -s "${microblogpub_app}/data/profile.toml" ]]
         then
-            ynh_die --message="key.pem OR profile.toml exist already, but the other one is missing."
+            ynh_die "key.pem OR profile.toml exist already, but the other one is missing."
         else
              poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
                 --name="${name}" --summary="${summary}" --password="${password}" 2>&1
@@ -123,7 +125,8 @@ microblogpub_initial_setup() {
         ## symlinking to the the data directory seems to work, so I'll stop this as an
         ## attempt to move the database only
         ## it might come in handy later when trying to move the database to mariadb
-        ## 
+        ##
+
         ## the yunohost app configuration wizard does not contain sqlalchemy_database (yet)
         # echo "sqlalchemy_database = \"$data_dir/microblogpub.db\"" >> ${microblogpub_app}/data/profile.toml
     )
@@ -135,13 +138,15 @@ microblogpub_move_data() {
     # if $data_dir empty move data
     if [[ $(ls $data_dir | wc -l) -eq 0 ]]; then
         mv ${microblogpub_app}/data/* "${data_dir}"
-        if [[ -e "${microblogpub_app}/data/.gitignore" ]]; then 
+        if [[ -e "${microblogpub_app}/data/.gitignore" ]]; then
+
             rm "${microblogpub_app}/data/.gitignore"
         fi
         rmdir "${microblogpub_app}/data"
     else
-        ynh_print_info --message="Directory $data_dir not empty - re-using old data"
-        # TODO this will eventually leave some data-<date> directories that need to 
+        ynh_print_info "Directory $data_dir not empty - re-using old data"
+        # TODO this will eventually leave some data-<date> directories that need to
+
         # be cleaned up → https://todo.sr.ht/~chrichri/microblog.pub_ynh_v2/6
         mv "${microblogpub_app}/data" "${microblogpub_app}/data-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
     fi
