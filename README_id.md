@@ -5,7 +5,9 @@ Ini TIDAK boleh diedit dengan tangan.
 
 # microblog.pub untuk YunoHost
 
-[![Tingkat integrasi](https://dash.yunohost.org/integration/microblogpub.svg)](https://ci-apps.yunohost.org/ci/apps/microblogpub/) ![Status kerja](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Status pemeliharaan](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
+[![Tingkat integrasi](https://apps.yunohost.org/badge/integration/microblogpub)](https://ci-apps.yunohost.org/ci/apps/microblogpub/)
+![Status kerja](https://apps.yunohost.org/badge/state/microblogpub)
+![Status pemeliharaan](https://apps.yunohost.org/badge/maintained/microblogpub)
 
 [![Pasang microblog.pub dengan YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=microblogpub)
 
@@ -19,7 +21,7 @@ Ini TIDAK boleh diedit dengan tangan.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Versi terkirim:** 2.0.0~ynh3
+**Versi terkirim:** 2.0.0~ynh4
 
 **Demo:** <https://microblog.pub>
 
@@ -31,7 +33,7 @@ A self-hosted, single-user, ActivityPub powered microblog.
 
 - Website aplikasi resmi: <https://docs.microblog.pub>
 - Dokumentasi pengguna resmi: <https://docs.migroblog.pub>
-- Repositori kode aplikasi hulu: <https://git.sr.ht/~tsileo/microblog.pub>
+- Depot kode aplikasi hulu: <https://git.sr.ht/~tsileo/microblog.pub>
 - Gudang YunoHost: <https://apps.yunohost.org/app/microblogpub>
 - Laporkan bug: <https://github.com/YunoHost-Apps/microblogpub_ynh/issues>
 
