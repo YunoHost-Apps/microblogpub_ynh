@@ -5,7 +5,9 @@ NON debe editarse manualmente.
 
 # microblog.pub para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/microblogpub.svg)](https://ci-apps.yunohost.org/ci/apps/microblogpub/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/microblogpub.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/microblogpub.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/microblogpub)](https://ci-apps.yunohost.org/ci/apps/microblogpub/)
+![Estado de funcionamento](https://apps.yunohost.org/badge/state/microblogpub)
+![Estado de mantemento](https://apps.yunohost.org/badge/maintained/microblogpub)
 
 [![Instalar microblog.pub con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=microblogpub)
 
@@ -19,7 +21,7 @@ NON debe editarse manualmente.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Versión proporcionada:** 2.0.0~ynh3
+**Versión proporcionada:** 2.0.0~ynh4
 
 **Demo:** <https://microblog.pub>
 

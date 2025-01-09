@@ -55,7 +55,7 @@ microblogpub_install_python() {
         ynh_app_setting_set --app=$YNH_APP_INSTANCE_NAME --key=python_version --value=$python_version
     else
         ynh_print_info --message="Python ${python_version} is already installed"
-    fi 
+    fi
 }
 
 microblogpub_install_deps () {
@@ -106,7 +106,7 @@ microblogpub_initial_setup() {
         # CI fails when key.pem or profile.toml exist already
         # TODO: https://git.sr.ht/~tsileo/microblog.pub/tree/v2/item/app/utils/yunohost.py#L25 ff.
         # there's no message for the case that key.pem already exists - open an issue/pr for that
-        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]] 
+        if [[ -s "${microblogpub_app}/data/key.pem" ]] && [[ -s "${microblogpub_app}/data/profile.toml" ]]
         then
             ynh_print_warn --message="key.pem and profile.toml exist. No new config generated"
         elif [[ -s "${microblogpub_app}/data/key.pem" ]] || [[ -s "${microblogpub_app}/data/profile.toml" ]]
@@ -114,7 +114,7 @@ microblogpub_initial_setup() {
             ynh_die --message="key.pem OR profile.toml exist already, but the other one is missing."
         else
              poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
-                --name="${name}" --summary="${summary}" --password="${password}" 2>&1
+                --name="${display_name}" --summary="${summary}" --password="${password}" 2>&1
         fi
         poetry run inv compile-scss 2>&1
 
@@ -123,7 +123,7 @@ microblogpub_initial_setup() {
         ## symlinking to the the data directory seems to work, so I'll stop this as an
         ## attempt to move the database only
         ## it might come in handy later when trying to move the database to mariadb
-        ## 
+        ##
         ## the yunohost app configuration wizard does not contain sqlalchemy_database (yet)
         # echo "sqlalchemy_database = \"$data_dir/microblogpub.db\"" >> ${microblogpub_app}/data/profile.toml
     )
@@ -135,13 +135,13 @@ microblogpub_move_data() {
     # if $data_dir empty move data
     if [[ $(ls $data_dir | wc -l) -eq 0 ]]; then
         mv ${microblogpub_app}/data/* "${data_dir}"
-        if [[ -e "${microblogpub_app}/data/.gitignore" ]]; then 
+        if [[ -e "${microblogpub_app}/data/.gitignore" ]]; then
             rm "${microblogpub_app}/data/.gitignore"
         fi
         rmdir "${microblogpub_app}/data"
     else
         ynh_print_info --message="Directory $data_dir not empty - re-using old data"
-        # TODO this will eventually leave some data-<date> directories that need to 
+        # TODO this will eventually leave some data-<date> directories that need to
         # be cleaned up → https://todo.sr.ht/~chrichri/microblog.pub_ynh_v2/6
         mv "${microblogpub_app}/data" "${microblogpub_app}/data-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
     fi

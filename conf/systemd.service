@@ -8,6 +8,7 @@ User=__APP__
 Group=__APP__
 WorkingDirectory=__MICROBLOGPUB_APP__
 Environment="UVICORN_PORT=__PORT__"
+Environment=PATH="__MICROBLOGPUB_BIN_PYENV__:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Environment="VENV_DIR=__MICROBLOGPUB_ACTIVE_VENV__"
 Environment="POETRY_VIRTUALENVS_PATH=__MICROBLOGPUB_VENV__"
 Environment="LOG_PATH=/var/log/__APP__"
