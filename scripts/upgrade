@@ -17,8 +17,8 @@ if [[ $(ynh_app_setting_get --key='installed_from') != 'YunohostV2catalogVersion
 
     # remove old .pyenv pyenv and venv directories
 	ynh_script_progression --message="upgrade from package-format v1: removing old python env" --weight=1
-    ynh_secure_remove --file="/var/www/${app}/.pyenv" 
-    ynh_secure_remove --file="/var/www/${app}/pyenv" 
+    ynh_secure_remove --file="/var/www/${app}/.pyenv"
+    ynh_secure_remove --file="/var/www/${app}/pyenv"
     ynh_secure_remove --file="/var/www/${app}/venv"
 
 	ynh_script_progression --message="upgrade from package-format v1: move data to $data_dir" --weight=1

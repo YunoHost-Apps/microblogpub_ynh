@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cmd=$1
 (
     export PATH="__MICROBLOGPUB_BIN_PYENV__:$PATH"

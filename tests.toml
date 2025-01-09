@@ -26,14 +26,14 @@ test_format = 1.0
     # -------------------------------
     # Default args to use for install
     # -------------------------------
-    
+
     # By default, the CI will automagically fill the 'standard' args
     # such as domain, path, admin, is_public and password with relevant values
     # and also install args with a "default" provided in the manifest..
     # It should only make sense to declare custom args here for args with no default values
-    
+
     args.username = "username"
-    args.name = "name"
+    args.display_name = "name"
     args.summary = "summary"
     # args.language = "fr_FR"    # NB : you should NOT need those lines unless for custom questions with no obvious/default value
     # args.multisite = 0
@@ -49,10 +49,10 @@ test_format = 1.0
 
 # # This is an additional test suite
 # [multisite]
-# 
+#
 #     # On additional tests suites, you can decide to run only specific tests
-# 
-#     only = ["install.subdir"]    
-# 
+#
+#     only = ["install.subdir"]
+#
 #     args.language = "en_GB"
 #     args.multisite = 1
