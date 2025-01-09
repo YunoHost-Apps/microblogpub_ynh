@@ -3,6 +3,12 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
+if [[ -z "${username:-}" ]]; then
+    display_name="$name"
+    ynh_app_setting_set --key="display_name" --value="$display_name"
+fi
+
+
 # migrating from microblog_ynh package version v1 from sr.ht
 if [[ $(ynh_app_setting_get --key='installed_from') != 'YunohostV2catalogVersion' ]]; then
     # rename microblogpub/microblogpub to microblogpub/app

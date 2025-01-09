@@ -114,7 +114,7 @@ microblogpub_initial_setup() {
             ynh_die --message="key.pem OR profile.toml exist already, but the other one is missing."
         else
              poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
-                --name="${name}" --summary="${summary}" --password="${password}" 2>&1
+                --name="${display_name}" --summary="${summary}" --password="${password}" 2>&1
         fi
         poetry run inv compile-scss 2>&1
 

@@ -42,7 +42,7 @@ ram.runtime = "500M"
     ask.en = "Choose your username, your handle will be @username@domain"
     type = "string"
 
-    [install.name]
+    [install.display_name]
     ask.en = "Your display name"
     type = "string"
 
