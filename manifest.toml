@@ -9,7 +9,7 @@ description.fr = "Microblog mono-utilisateur alimenté par ActivityPub"
 
 # version from v1 package 2.0.0-rc.12~ynh1
 # yunohost doesn't like 'rc', so:
-version = "2.0.0~ynh3"
+version = "2.0.0~ynh4"
 
 maintainers = ["Thomas Sileo"]
 
