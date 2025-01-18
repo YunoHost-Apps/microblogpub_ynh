@@ -7,7 +7,6 @@ microblogpub_src_pyenv="$install_dir/pyenv.src"         # path to microblog.pubs
 microblogpub_pyenv="$install_dir/pyenv"                 # path to microblog.pubs python version
 microblogpub_bin_pyenv="${microblogpub_pyenv}/versions/${python_version}/bin" # pyenv exectutablesa
 microblogpub_active_venv='not_found'                    # initialize path to active venv
-#REMOVEME? Everything about fpm_usage is removed in helpers2.1... | fpm_usage=medium
 
 microblogpub_set_active_venv() {
     # poetry installs the venv to a path that cannot be given to it
@@ -28,7 +27,7 @@ microblogpub_set_filepermissions() {
     chmod -R o-rwx "$install_dir" "$data_dir"
     chown -R $app:www-data "$install_dir" "$data_dir"
     chmod u+x $install_dir/inv.sh
-    #REMOVEME? Assuming ynh_config_add_logrotate is called, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R $app:www-data "/var/log/$app"
+    chown -R $app:www-data "/var/log/$app"
 }
 
 microblogpub_install_python() {
