@@ -4,19 +4,19 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_print_info --message="Declaring files to be backed up..."
+ynh_print_info "Declaring files to be backed up..."
 
 # Thomas: Note that we don't backup Python/the venv as it can be easily rebuilt
 # me: but if I find an old archive and can't download the apropriate environment
 # anymore, but want to run that version? I disagree.
-# ynh_backup --src_path="${microblogpub_app}"
-# ynh_backup --src_path="${install_dir}/inv.sh"
-ynh_backup --src_path="${install_dir}"
-ynh_backup --src_path="${data_dir}"
-ynh_backup --src_path="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-ynh_backup --src_path="/etc/fail2ban/jail.d/${app}.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/${app}.conf"
-ynh_backup --src_path="/etc/logrotate.d/${app}"
-ynh_backup --src_path="/etc/systemd/system/${app}.service"
+# ynh_backup "${microblogpub_app}"
+# ynh_backup "${install_dir}/inv.sh"
+ynh_backup "${install_dir}"
+ynh_backup "${data_dir}"
+ynh_backup "/etc/nginx/conf.d/${domain}.d/${app}.conf"
+ynh_backup "/etc/fail2ban/jail.d/${app}.conf"
+ynh_backup "/etc/fail2ban/filter.d/${app}.conf"
+ynh_backup "/etc/logrotate.d/${app}"
+ynh_backup "/etc/systemd/system/${app}.service"
 
-ynh_print_info --message="Backup script completed for ${app}."
+ynh_print_info "Backup script completed for ${app}."
