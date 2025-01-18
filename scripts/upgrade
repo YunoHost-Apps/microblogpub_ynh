@@ -64,8 +64,6 @@ fi
 ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
 chmod u+x $install_dir/inv.sh
 
-ynh_python_install
-
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
@@ -104,6 +102,9 @@ pushd "$install_dir/app"
     microblogpub_active_venv=$(PATH=$path_with_python poetry env info --path)
     PATH=$path_with_python poetry run inv update
 popd
+
+ynh_script_progression "Generate wrapper vor pyenv..."
+ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS

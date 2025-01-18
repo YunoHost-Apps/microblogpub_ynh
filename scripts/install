@@ -66,6 +66,9 @@ pushd "$install_dir/app"
     PATH=$path_with_python poetry run inv migrate-db
 popd
 
+ynh_script_progression "Generate wrapper vor pyenv..."
+ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
+
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
