@@ -6,19 +6,17 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
-WorkingDirectory=__MICROBLOGPUB_APP__
+WorkingDirectory=__INSTALL_DIR__/app
 Environment="UVICORN_PORT=__PORT__"
-Environment=PATH="__MICROBLOGPUB_BIN_PYENV__:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment="PATH=__PATH_WITH_PYTHON__"
 Environment="VENV_DIR=__MICROBLOGPUB_ACTIVE_VENV__"
-Environment="POETRY_VIRTUALENVS_PATH=__MICROBLOGPUB_VENV__"
+Environment="POETRY_VIRTUALENVS_PATH=__INSTALL_DIR__/venv"
 Environment="LOG_PATH=/var/log/__APP__"
-ExecStart=__MICROBLOGPUB_BIN_PYENV__/poetry run supervisord -c misc/ynh-supervisord.conf -n
+ExecStart=__PYTHON_DIR__/poetry run supervisord -c misc/ynh-supervisord.conf -n
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 
 # Sandboxing options to harden security
-# Depending on specificities of your service/app, you may need to tweak these
-# .. but this should be a good baseline
 # Details for these options: https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 NoNewPrivileges=yes
 PrivateTmp=yes

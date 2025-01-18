@@ -1,23 +1,29 @@
 #!/bin/bash
 
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 # Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
+source ../settings/scripts/ynh_python_install
 source /usr/share/yunohost/helpers
 
-# ynh_script_progression "Setting up python ${python_version}..."
-# microblogpub_install_python
+ynh_python_install
 
+#=================================================
+# RESTORE THE APP MAIN DIR
+#=================================================
 ynh_script_progression "Restoring the app main directory..."
-ynh_restore "${install_dir}"
 
-# ynh_script_progression "Installing dependencies..."
-# microblogpub_install_deps
+ynh_restore "$install_dir"
 
-# ynh_script_progression "Restoring inv.sh..."
-# ynh_restore "${install_dir}/inv.sh"
+#=================================================
+# RESTORE THE DATA DIRECTORY
+#=================================================
+ynh_script_progression "Restoring the data directory..."
 
-ynh_script_progression "Restoring data..."
-ynh_restore "${data_dir}"
+ynh_restore "$data_dir"
 
 # TODO backup logs with --big
 # Re-create the logs dir
@@ -26,30 +32,42 @@ mkdir -p /var/log/$app
 touch /var/log/$app/uvicorn.log
 
 ynh_script_progression "Setting file permsissions..."
-microblogpub_set_filepermissions
+local dir
+chmod 750 "$install_dir" "$data_dir"
+chmod -R o-rwx "$install_dir" "$data_dir"
+chown -R $app:www-data "$install_dir" "$data_dir"
+chmod u+x $install_dir/inv.sh
+chown -R $app:www-data "/var/log/$app"
 
-ynh_script_progression "Restoring the Fail2Ban configuration..."
+#=================================================
+# RESTORE SYSTEM CONFIGURATIONS
+#=================================================
+ynh_script_progression "Restoring system configurations related to $app..."
+
+ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
+
+ynh_restore "/etc/systemd/system/$app.service"
+systemctl enable "$app.service" --quiet
+
+yunohost service add "$app" --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
+
+ynh_restore "/etc/logrotate.d/$app"
+
 ynh_restore "/etc/fail2ban/jail.d/$app.conf"
 ynh_restore "/etc/fail2ban/filter.d/$app.conf"
 ynh_systemctl --action=restart --service=fail2ban
 
-ynh_script_progression "Restoring the NGINX web server configuration..."
-ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
+#=================================================
+# RELOAD NGINX AND PHP-FPM OR THE APP SERVICE
+#=================================================
+ynh_script_progression "Reloading NGINX web server and $app's service..."
 
-ynh_script_progression "Restoring $app's systemd service..."
-ynh_restore "/etc/systemd/system/$app.service"
-systemctl enable $app.service --quiet
+ynh_systemctl --service="$app" --action="start"
 
-ynh_script_progression "Restoring the logrotate configuration..."
-ynh_restore "/etc/logrotate.d/$app"
-
-ynh_script_progression "Integrating service in YunoHost..."
-yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
-
-ynh_script_progression "Starting $app's systemd service..."
-ynh_systemctl --service=$app --action="start"
-
-ynh_script_progression "Reloading NGINX web server..."
 ynh_systemctl --service=nginx --action=reload
+
+#=================================================
+# END OF SCRIPT
+#=================================================
 
 ynh_script_progression "Restoration completed for $app"
