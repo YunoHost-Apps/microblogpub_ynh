@@ -37,8 +37,6 @@ fi
 ### ynh_check_app_version_changed will stop the upgrade if the app is up to date.
 ### UPGRADE_APP should be used to upgrade the core app only if there's an upgrade to do.
 
-ynh_print_info "
-
 ynh_script_progression "Stopping $app's systemd service..."
 ynh_systemctl --service=$app --action="stop"
 
