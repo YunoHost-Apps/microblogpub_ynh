@@ -1,22 +1,46 @@
 #!/bin/bash
 
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 # Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_print_info --message="Declaring files to be backed up..."
+ynh_print_info "Declaring files to be backed up..."
 
-# Thomas: Note that we don't backup Python/the venv as it can be easily rebuilt
-# me: but if I find an old archive and can't download the apropriate environment
-# anymore, but want to run that version? I disagree.
-# ynh_backup --src_path="${microblogpub_app}"
-# ynh_backup --src_path="${install_dir}/inv.sh"
-ynh_backup --src_path="${install_dir}"
-ynh_backup --src_path="${data_dir}"
-ynh_backup --src_path="/etc/nginx/conf.d/${domain}.d/${app}.conf"
-ynh_backup --src_path="/etc/fail2ban/jail.d/${app}.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/${app}.conf"
-ynh_backup --src_path="/etc/logrotate.d/${app}"
-ynh_backup --src_path="/etc/systemd/system/${app}.service"
+#=================================================
+# BACKUP THE APP MAIN DIR
+#=================================================
 
-ynh_print_info --message="Backup script completed for ${app}."
+ynh_backup "$install_dir"
+
+#=================================================
+# BACKUP THE DATA DIR
+#=================================================
+
+ynh_backup "$data_dir"
+
+#=================================================
+# BACKUP SYSTEM CONFIGURATION
+#=================================================
+
+# Backup the NGINX configuration
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
+
+# Backup the systemd service unit
+ynh_backup "/etc/systemd/system/$app.service"
+
+# Backup the logrotate configuration
+ynh_backup "/etc/logrotate.d/$app"
+
+# Backup the Fail2Ban config
+ynh_backup "/etc/fail2ban/jail.d/$app.conf"
+ynh_backup "/etc/fail2ban/filter.d/$app.conf"
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info "Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
