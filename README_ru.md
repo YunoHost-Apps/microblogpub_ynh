@@ -21,7 +21,7 @@
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Поставляемая версия:** 2.0.0~ynh4
+**Поставляемая версия:** 2.0.0~ynh5
 
 **Демо-версия:** <https://microblog.pub>
 
