@@ -21,7 +21,7 @@ It shall NOT be edited by hand.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Shipped version:** 2.0.0~ynh4
+**Shipped version:** 2.0.0~ynh5
 
 **Demo:** <https://microblog.pub>
 

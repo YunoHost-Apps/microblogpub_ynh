@@ -21,7 +21,7 @@ EZ editatu eskuz.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Paketatutako bertsioa:** 2.0.0~ynh4
+**Paketatutako bertsioa:** 2.0.0~ynh5
 
 **Demoa:** <https://microblog.pub>
 

@@ -21,7 +21,7 @@ Ini TIDAK boleh diedit dengan tangan.
 A self-hosted, single-user, ActivityPub powered microblog.
 
 
-**Versi terkirim:** 2.0.0~ynh4
+**Versi terkirim:** 2.0.0~ynh5
 
 **Demo:** <https://microblog.pub>
 

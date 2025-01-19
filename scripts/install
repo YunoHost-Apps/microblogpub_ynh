@@ -1,62 +1,113 @@
 #!/bin/bash
+
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
 source _common.sh
+source ynh_python_install
 source /usr/share/yunohost/helpers
 
-# should'nt be necessary since it is set during each installation
-# ynh_app_setting_set --app=$app --key=python_version --value=$python_version
+#=================================================
+# INITIALIZE AND STORE SETTINGS
+#=================================================
 
-ynh_script_progression --message="Setting up source files..." --weight=1
-ynh_setup_source --dest_dir="${microblogpub_app}"
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_script_progression "Setting up source files..."
 
-ynh_script_progression --message="moving ${microblogpub_app}/data dir to ${data_dir}..." --weight=1
-microblogpub_move_data
+# Download, check integrity, uncompress and patch the source from manifest.toml
+ynh_setup_source --dest_dir="$install_dir/app"
 
-ynh_script_progression --message="Installing Python ${python_version}..." --weight=120
-microblogpub_install_python
+ynh_script_progression "moving $install_dir/app/data dir to ${data_dir}..."
+# if $data_dir empty move data
+if [[ $(ls $data_dir | wc -l) -eq 0 ]]; then
+    mv $install_dir/app/data/* "${data_dir}"
+    if [[ -e "$install_dir/app/data/.gitignore" ]]; then
+        rm "$install_dir/app/data/.gitignore"
+    fi
+    rmdir "$install_dir/app/data"
+else
+    ynh_print_info "Directory $data_dir not empty - re-using old data"
+    # TODO this will eventually leave some data-<date> directories that need to
+    # be cleaned up → https://todo.sr.ht/~chrichri/microblog.pub_ynh_v2/6
+    mv "$install_dir/app/data" "$install_dir/app/data-$(date '+%Y-%m-%d_%H-%M-%S_%N')"
+fi
+# after moving or deleting symlink
+ln -s "${data_dir}" "$install_dir/app/data"
 
-ynh_script_progression --message="Installing Python deps..." --weight=60
-microblogpub_install_deps
-# after installing the venv through poetry set the $microblogpub_active_venv to be used
-# later to configure the systemd.service
-microblogpub_set_active_venv
+#=================================================
+# BUILD APP
+#=================================================
+ynh_script_progression "Building $app's..."
 
-ynh_script_progression --message="Setting up microblogpub config..." --weight=1
-microblogpub_initial_setup
+ynh_python_install
+pushd "$install_dir/app"
+    ynh_hide_warnings env PATH=$path_with_python pip --quiet install poetry
+    export POETRY_VIRTUALENVS_PATH=$install_dir/venv
+    ynh_hide_warnings env PATH=$path_with_python poetry install --no-root
+    microblogpub_active_venv=$(PATH=$path_with_python poetry env info --path)
 
-ynh_script_progression --message="Initializing database..." --weight=1
-microblogpub_initialize_db
+    # CI fails when key.pem or profile.toml exist already
+    # TODO: https://git.sr.ht/~tsileo/microblog.pub/tree/v2/item/app/utils/yunohost.py#L25 ff.
+    # there's no message for the case that key.pem already exists - open an issue/pr for that
+    if [[ -s "$install_dir/app/data/key.pem" ]] && [[ -s "$install_dir/app/data/profile.toml" ]]
+    then
+        ynh_print_warn "key.pem and profile.toml exist. No new config generated"
+    elif [[ -s "$install_dir/app/data/key.pem" ]] || [[ -s "$install_dir/app/data/profile.toml" ]]
+    then
+        ynh_die "key.pem OR profile.toml exist already, but the other one is missing."
+    else
+         ynh_hide_warnings env PATH=$path_with_python poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
+            --name="${display_name}" --summary="${summary}" --password="${password}" 2>&1
+    fi
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv compile-scss
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv migrate-db
+popd
 
-ynh_script_progression --message="Configure integration version to show..." --weight=1
-microblogpub_set_version
+ynh_script_progression "Generate wrapper vor pyenv..."
+ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
 
-ynh_script_progression --message="Generate wrapper vor pyenv..." --weight=1
-ynh_add_config --template="inv.sh" --destination="$install_dir/inv.sh"
+#=================================================
+# SYSTEM CONFIGURATION
+#=================================================
+ynh_script_progression "Adding system configurations related to $app..."
 
-ynh_script_progression --message="Configuring NGINX web server..." --weight=1
-ynh_add_nginx_config
+# Create a dedicated NGINX config using the conf/nginx.conf template
+ynh_config_add_nginx
 
-ynh_script_progression --message="Configuring a systemd service..." --weight=1
-ynh_add_systemd_config
-
-ynh_script_progression --message="Configuring log rotation..." --weight=1
-ynh_use_logrotate
-
-ynh_script_progression --message="Configuring Fail2Ban..." --weight=1
-touch /var/log/$app/uvicorn.log
-ynh_add_fail2ban_config --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:.+ <HOST>:0 - \"POST /admin/login HTTP/.*\" 403 Forbidden"
-
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
+# Create a dedicated systemd config
+ynh_config_add_systemd
 yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
-ynh_script_progression --message="setting file permissions..." --weight=1
-microblogpub_set_filepermissions
+# Use logrotate to manage application logfile(s)
+ynh_config_add_logrotate
 
-ynh_script_progression --message="Starting a systemd service..." --weight=1
-# TODO look for string in logfile that confirms successful start
-# put this into a function - it is used in other places also
-ynh_systemd_action --service_name=$app --action="start" --log_path="/var/log/$app/$app.log"
+# Create a dedicated Fail2Ban config
+touch /var/log/$app/uvicorn.log
+ynh_config_add_fail2ban --logpath="/var/log/$app/uvicorn.log" --failregex="INFO:.+ <HOST>:0 - \"POST /admin/login HTTP/.*\" 403 Forbidden"
 
-ynh_script_progression --message="Mark this as installed from the V2 app integration..." --weight=1
+ynh_script_progression "Setting file permissions..."
+chmod 750 "$install_dir" "$data_dir"
+chmod -R o-rwx "$install_dir" "$data_dir"
+chown -R $app:www-data "$install_dir" "$data_dir"
+chmod u+x $install_dir/inv.sh
+chown -R $app:www-data "/var/log/$app"
+
+#=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression "Starting $app's systemd service..."
+
+# Start a systemd service
+ynh_systemctl --service="$app" --action="start"
+
+ynh_script_progression "Mark this as installed from the V2 app integration..."
 ynh_app_setting_set --key='installed_from' --value='YunohostV2catalogVersion'
 
-ynh_script_progression --message="Installation of $app completed" --last
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression "Installation of $app completed"
