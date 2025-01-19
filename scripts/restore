@@ -32,7 +32,6 @@ mkdir -p /var/log/$app
 touch /var/log/$app/uvicorn.log
 
 ynh_script_progression "Setting file permsissions..."
-local dir
 chmod 750 "$install_dir" "$data_dir"
 chmod -R o-rwx "$install_dir" "$data_dir"
 chown -R $app:www-data "$install_dir" "$data_dir"
