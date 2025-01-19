@@ -96,7 +96,8 @@ pushd "$install_dir/app"
     export POETRY_VIRTUALENVS_PATH=$install_dir/venv
     PATH=$path_with_python poetry install --no-root
     microblogpub_active_venv=$(PATH=$path_with_python poetry env info --path)
-    PATH=$path_with_python poetry run inv update
+    PATH=$path_with_python poetry run inv compile-scss
+    PATH=$path_with_python poetry run inv migrate-db
 popd
 
 ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
@@ -110,7 +111,6 @@ ynh_script_progression "Upgrading system configurations related to $app..."
 ynh_config_add_nginx
 
 ynh_config_add_systemd
-
 yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
 ynh_config_add_logrotate
