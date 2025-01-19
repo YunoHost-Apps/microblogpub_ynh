@@ -25,7 +25,6 @@ if [[ -z "${username:-}" ]]; then
     ynh_app_setting_set --key="display_name" --value="$display_name"
 fi
 
-
 # migrating from microblog_ynh package version v1 from sr.ht
 if [[ $(ynh_app_setting_get --key='installed_from') != 'YunohostV2catalogVersion' ]]; then
     # rename microblogpub/microblogpub to microblogpub/app
@@ -60,9 +59,6 @@ ln -s "${data_dir}" "$install_dir/app/data"
     ynh_script_progression "Mark this as updated to V2 app integration..."
     ynh_app_setting_set --key='installed_from' --value='YunohostV2catalogVersion'
 fi
-
-ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
-chmod u+x $install_dir/inv.sh
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -103,8 +99,8 @@ pushd "$install_dir/app"
     PATH=$path_with_python poetry run inv update
 popd
 
-ynh_script_progression "Generate wrapper vor pyenv..."
 ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"
+chmod u+x $install_dir/inv.sh
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATIONS
