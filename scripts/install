@@ -44,9 +44,9 @@ ynh_script_progression "Building $app's..."
 
 ynh_python_install
 pushd "$install_dir/app"
-    PATH=$path_with_python pip --quiet install poetry
+    ynh_hide_warnings env PATH=$path_with_python pip --quiet install poetry
     export POETRY_VIRTUALENVS_PATH=$install_dir/venv
-    PATH=$path_with_python poetry install --no-root
+    ynh_hide_warnings env PATH=$path_with_python poetry install --no-root
     microblogpub_active_venv=$(PATH=$path_with_python poetry env info --path)
 
     # CI fails when key.pem or profile.toml exist already
@@ -59,11 +59,11 @@ pushd "$install_dir/app"
     then
         ynh_die "key.pem OR profile.toml exist already, but the other one is missing."
     else
-         PATH=$path_with_python poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
+         ynh_hide_warnings env PATH=$path_with_python poetry run inv yunohost-config --domain="${domain}" --username="${username}" \
             --name="${display_name}" --summary="${summary}" --password="${password}" 2>&1
     fi
-    PATH=$path_with_python poetry run inv compile-scss
-    PATH=$path_with_python poetry run inv migrate-db
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv compile-scss
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv migrate-db
 popd
 
 ynh_script_progression "Generate wrapper vor pyenv..."

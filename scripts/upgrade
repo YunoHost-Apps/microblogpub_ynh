@@ -92,12 +92,12 @@ ynh_script_progression "Building $app's..."
 
 ynh_python_install
 pushd "$install_dir/app"
-    PATH=$path_with_python pip --quiet install poetry
+    ynh_hide_warnings env PATH=$path_with_python pip --quiet install poetry
     export POETRY_VIRTUALENVS_PATH=$install_dir/venv
-    PATH=$path_with_python poetry install --no-root
+    ynh_hide_warnings env PATH=$path_with_python poetry install --no-root
     microblogpub_active_venv=$(PATH=$path_with_python poetry env info --path)
-    PATH=$path_with_python poetry run inv compile-scss
-    PATH=$path_with_python poetry run inv migrate-db
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv compile-scss
+    ynh_hide_warnings env PATH=$path_with_python poetry run inv migrate-db
 popd
 
 ynh_config_add --template="inv.sh" --destination="$install_dir/inv.sh"

@@ -30,7 +30,7 @@ ynh_script_progression "Building $app's..."
 
 ynh_python_install
 pushd "$install_dir/app"
-    PATH=$path_with_python pip --quiet install poetry
+    ynh_hide_warnings env PATH=$path_with_python pip --quiet install poetry
 popd
 
 # TODO backup logs with --big
